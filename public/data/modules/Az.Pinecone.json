@@ -1,0 +1,1 @@
+{"module":"Az.Pinecone","version":"0.0.0","cmdlets":{"Get-AzPineconeOrganization":{"syntax":"Get-AzPineconeOrganization [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]","examples":["Get-AzPineconeOrganization -ResourceGroupName clitest","This command will get all organization details for a subscription id"]}}}

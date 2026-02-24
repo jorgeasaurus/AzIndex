@@ -1,0 +1,1 @@
+{"module":"Az.WeightsAndBiases","version":"0.0.0","cmdlets":{"Get-AzWeightsAndBiasesInstance":{"syntax":"Get-AzWeightsAndBiasesInstance [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]","examples":["Get-AzWeightsAndBiasesInstance -ResourceGroupName jawt-rg","This command lists all the resources in a given resource group"]}}}
