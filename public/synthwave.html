@@ -1102,12 +1102,12 @@
             <div class="filter-row">
                 <div class="search-wrap">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" class="glass-input" id="searchInput" placeholder="Search">
+                    <input type="text" class="crt-input" id="searchInput" placeholder="Search">
                     <div id="recentSearches" class="recent-dropdown"></div>
                 </div>
-                <select class="glass-select" id="categoryFilter" aria-label="Category"><option value="">All Categories</option></select>
-                <select class="glass-select" id="moduleFilter" aria-label="Module"><option value="">All Modules</option></select>
-                <select class="glass-select" id="sortSelect" aria-label="Sort">
+                <select class="crt-select" id="categoryFilter" aria-label="Category"><option value="">All Categories</option></select>
+                <select class="crt-select" id="moduleFilter" aria-label="Module"><option value="">All Modules</option></select>
+                <select class="crt-select" id="sortSelect" aria-label="Sort">
                     <option value="alpha">Sort: A-Z</option>
                     <option value="category">Sort: Category</option>
                     <option value="module">Sort: Module</option>
@@ -1417,7 +1417,7 @@
             var moduleBadge = shortModule ? '<span class="glass-badge badge-module">' + escapeHtml(shortModule) + '</span>' : '';
             var exBadge = c.hasExamples ? '<span class="glass-badge badge-examples">Examples</span>' : '';
 
-            return '<div class="cmdlet-card animate-fade-up verb-' + escapeHtml(verb) + '" style="animation-delay:' + animDelay + 'ms" data-name="' + escapeHtml(c.name) + '" data-module="' + escapeHtml(c.module) + '">' +
+            return '<div class="cmdlet-card animate-slide-in verb-' + escapeHtml(verb) + '" style="animation-delay:' + animDelay + 'ms" data-name="' + escapeHtml(c.name) + '" data-module="' + escapeHtml(c.module) + '">' +
                 '<div class="card-header"><div class="card-name">' + escapeHtml(c.name) + learnLink + '</div>' +
                 '<div class="card-badges">' + moduleBadge + '<span class="glass-badge badge-category">' + escapeHtml(c.category) + '</span></div></div>' +
                 '<p class="card-desc">' + (c.description ? escapeHtml(c.description) : '') + '</p>' +
