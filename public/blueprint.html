@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Az Index — Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent-primary: #4d9de0;
+  --accent-secondary: #7bb8e8;
+  --accent-glow: rgba(77,157,224,0.3);
+  --bg-base: #0a1628;
+  --bg-layer1: rgba(77,157,224,0.06);
+  --bg-layer2: rgba(77,157,224,0.1);
+  --bg-layer3: rgba(77,157,224,0.15);
+  --bg-modal: rgba(8,16,32,0.97);
+  --border-subtle: rgba(77,157,224,0.2);
+  --border-medium: rgba(77,157,224,0.35);
+  --text-primary: #c8e0f4;
+  --text-secondary: #8ab0cc;
+  --text-tertiary: #3a5c7a;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --header-h: 64px;
+  --filter-h: 112px;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
+  --shadow-modal: 0 24px 80px rgba(0,0,0,0.6);
+  --transition: 0.18s ease;
+  --verb-get: #4db8a0;
+  --verb-set: #d4a843;
+  --verb-new: #4d9de0;
+  --verb-remove: #c44a4a;
+  --verb-start: #4db8cc;
+  --verb-stop: #6080a0;
+  --verb-connect: #9070d0;
+  --verb-invoke: #70b8d0;
+  --verb-import: #d4c040;
+  --verb-default: #3a5c7a;
+  --cat-compute: #d4a843;
+  --cat-network: #4d9de0;
+  --cat-storage: #4db8a0;
+  --cat-security: #c44a4a;
+  --cat-auth: #9070d0;
+  --cat-resources: #4db8cc;
+  --cat-default: #3a5c7a;
+}
+[data-theme="light"] {
+  --bg-base: #0a1628;
+  --text-primary: #c8e0f4;
+  --text-secondary: #8ab0cc;
+  --text-tertiary: #3a5c7a;
+  --bg-layer1: rgba(77,157,224,0.06);
+  --bg-layer2: rgba(77,157,224,0.1);
+  --bg-layer3: rgba(77,157,224,0.15);
+  --bg-modal: rgba(8,16,32,0.97);
+  --border-subtle: rgba(77,157,224,0.2);
+  --border-medium: rgba(77,157,224,0.35);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
+  --shadow-modal: 0 24px 80px rgba(0,0,0,0.6);
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-image:
+    linear-gradient(rgba(77,157,224,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,157,224,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%,
+    rgba(77,157,224,0.08) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.logo-icon { background: #1a6bb5; border: 1px solid #4d9de0; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
+#appHeader { background: rgba(10,22,40,0.9); border-bottom: 1px solid rgba(77,157,224,0.3); }
+[data-theme="light"] #appHeader { background: rgba(10,22,40,0.9); }
+#filterBar { background: rgba(10,22,40,0.85); border-bottom: 1px solid rgba(77,157,224,0.2); }
+[data-theme="light"] #filterBar { background: rgba(10,22,40,0.85); }
+.cmdlet-card { border-left: 3px solid var(--verb-color, var(--verb-default)); }
+.cmdlet-card:hover { box-shadow: 0 0 16px rgba(77,157,224,0.2); border-color: rgba(77,157,224,0.4); }
+.syntax-block { background: rgba(0,0,0,0.4); color: #7bb8e8; border-color: rgba(77,157,224,0.2); }
+[data-theme="light"] .syntax-block { background: rgba(0,0,0,0.4); color: #7bb8e8; }
+.hl-cmdlet { color: #7bb8e8; }
+.hl-param { color: #9ab0d0; }
+.hl-string { color: #4db8a0; }
+.hl-variable { color: #d4a843; }
+.btn-primary { background: #1a6bb5; border: 1px solid #4d9de0; }
+.loading-logo { background: #1a6bb5; border: 1px solid #4d9de0; border-radius: 4px; }
+
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  background:var(--bg-base);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,114,198,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(80,163,224,0.08) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Header ─────────────────────────────────────── */
+#appHeader{
+  position:sticky;top:0;z-index:100;
+  height:var(--header-h);
+  background:rgba(28,28,30,0.8);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;gap:12px;
+  padding:0 20px;
+}
+[data-theme="light"] #appHeader{background:rgba(240,244,248,0.85);}
+.logo{
+  display:flex;align-items:center;gap:8px;
+  font-weight:700;font-size:1.1rem;letter-spacing:-.02em;
+  color:var(--text-primary);text-decoration:none;flex-shrink:0;
+}
+.logo-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#0072C6,#50a3e0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:700;color:#fff;letter-spacing:-.02em;
+}
+.header-meta{
+  display:flex;align-items:center;gap:6px;
+  font-size:.75rem;color:var(--text-tertiary);flex-shrink:0;
+}
+.header-meta span{
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  padding:2px 8px;border-radius:20px;
+}
+.header-spacer{flex:1}
+.header-stat{
+  font-size:.78rem;color:var(--text-secondary);
+  display:flex;align-items:center;gap:4px;
+}
+.header-stat strong{color:var(--accent-primary);}
+.header-actions{display:flex;align-items:center;gap:6px;}
+.btn-icon{
+  width:34px;height:34px;border-radius:var(--radius-md);
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);font-size:.9rem;
+}
+.btn-icon:hover{background:var(--bg-layer3);color:var(--text-primary);border-color:var(--border-medium);}
+.btn-primary{
+  display:flex;align-items:center;gap:6px;
+  padding:0 14px;height:34px;border-radius:var(--radius-md);
+  background:var(--accent-primary);border:none;color:#fff;
+  font-size:.8rem;font-weight:600;cursor:pointer;
+  transition:all var(--transition);white-space:nowrap;
+}
+.btn-primary:hover{filter:brightness(1.15);}
+.export-wrap{position:relative;}
+.export-menu{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--bg-modal);border:1px solid var(--border-medium);
+  border-radius:var(--radius-md);padding:4px;
+  display:none;flex-direction:column;gap:2px;
+  min-width:140px;z-index:200;
+  box-shadow:var(--shadow-modal);
+}
+.export-menu.open{display:flex;}
+.export-menu button{
+  background:none;border:none;color:var(--text-primary);
+  padding:7px 10px;border-radius:6px;text-align:left;
+  cursor:pointer;font-size:.82rem;font-family:var(--font-sans);
+  display:flex;align-items:center;gap:8px;
+}
+.export-menu button:hover{background:var(--bg-layer3);}
+
+.theme-select{
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);border-radius:var(--radius-md);
+  padding:0 10px;height:34px;font-size:.78rem;
+  font-family:var(--font-sans);cursor:pointer;
+}
+.theme-select:focus{outline:none;border-color:var(--accent-primary);}
+
+/* ── Filter Bar ─────────────────────────────────── */
+#filterBar{
+  position:sticky;top:var(--header-h);z-index:90;
+  background:rgba(28,28,30,0.75);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-bottom:1px solid var(--border-subtle);
+  padding:10px 20px;
+  display:flex;flex-direction:column;gap:8px;
+}
+[data-theme="light"] #filterBar{background:rgba(240,244,248,0.8);}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:380px;}
+.search-icon{
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  color:var(--text-tertiary);font-size:.85rem;pointer-events:none;
+}
+#searchInput{
+  width:100%;height:36px;
+  padding:0 32px 0 32px;
+  background:var(--bg-layer2);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);
+  color:var(--text-primary);
+  font-size:.85rem;font-family:var(--font-sans);
+  transition:all var(--transition);
+}
+#searchInput::placeholder{color:var(--text-tertiary);}
+#searchInput:focus{outline:none;border-color:var(--accent-primary);box-shadow:0 0 0 3px var(--accent-glow);}
+.search-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text-tertiary);
+  cursor:pointer;font-size:.85rem;display:none;padding:2px;
+}
+.filter-select{
+  height:36px;padding:0 10px;
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-primary);border-radius:var(--radius-md);
+  font-size:.82rem;font-family:var(--font-sans);cursor:pointer;
+}
+.filter-select:focus{outline:none;border-color:var(--accent-primary);}
+.sort-label{font-size:.78rem;color:var(--text-tertiary);white-space:nowrap;}
+.verb-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.verb-label{font-size:.75rem;color:var(--text-tertiary);white-space:nowrap;}
+.verb-chip{
+  padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
+  white-space:nowrap;
+}
+.verb-chip:hover{border-color:var(--border-medium);color:var(--text-primary);}
+.verb-chip.active{color:#fff;border-color:transparent;}
+.preset-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.preset-label{font-size:.75rem;color:var(--text-tertiary);white-space:nowrap;}
+.preset-chip{
+  padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
+  display:flex;align-items:center;gap:4px;
+}
+.preset-chip:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+.preset-del{font-size:.65rem;opacity:.6;margin-left:2px;}
+.preset-del:hover{opacity:1;color:var(--verb-remove);}
+.btn-save-preset{
+  padding:3px 10px;border-radius:20px;font-size:.75rem;
+  background:none;border:1px dashed var(--border-medium);
+  color:var(--text-tertiary);cursor:pointer;transition:all var(--transition);
+}
+.btn-save-preset:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+
+/* recent searches */
+.recent-dropdown{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;
+  background:var(--bg-modal);border:1px solid var(--border-medium);
+  border-radius:var(--radius-md);
+  display:none;flex-direction:column;z-index:300;
+  box-shadow:var(--shadow-modal);overflow:hidden;
+}
+.recent-dropdown.open{display:flex;}
+.recent-item{
+  padding:8px 12px;font-size:.82rem;cursor:pointer;
+  color:var(--text-secondary);display:flex;align-items:center;gap:8px;
+  transition:background var(--transition);
+}
+.recent-item:hover{background:var(--bg-layer3);color:var(--text-primary);}
+.recent-icon{font-size:.75rem;color:var(--text-tertiary);}
+
+/* ── Main Layout ────────────────────────────────── */
+#app{position:relative;z-index:1;}
+#mainLayout{
+  display:flex;
+  max-width:1600px;margin:0 auto;padding:16px 16px 80px;
+  gap:16px;
+}
+
+/* ── Alpha Nav ──────────────────────────────────── */
+#alphaNav{
+  position:sticky;top:calc(var(--header-h) + var(--filter-h) + 16px);
+  height:calc(100vh - var(--header-h) - var(--filter-h) - 48px);
+  display:flex;flex-direction:column;align-items:center;
+  gap:2px;width:26px;flex-shrink:0;overflow-y:auto;
+  scrollbar-width:none;padding-top:4px;
+}
+#alphaNav::-webkit-scrollbar{display:none;}
+.alpha-link{
+  font-size:.65rem;font-weight:600;color:var(--text-tertiary);
+  cursor:pointer;line-height:1;padding:2px 4px;border-radius:3px;
+  transition:all var(--transition);text-decoration:none;display:block;
+}
+.alpha-link:hover,.alpha-link.active{color:var(--accent-primary);}
+
+/* ── Cards ──────────────────────────────────────── */
+#cardsGrid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:12px;align-content:start;
+}
+.cmdlet-card{
+  background:var(--bg-layer1);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--radius-lg);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all var(--transition);
+  position:relative;
+  overflow:hidden;
+  border-left:3px solid var(--verb-color, var(--verb-default));
+  animation:fadeUp .25s ease both;
+}
+.cmdlet-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+  pointer-events:none;
+}
+.cmdlet-card:hover{
+  background:var(--bg-layer2);
+  border-color:var(--border-medium);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-card), 0 0 0 1px var(--border-medium);
+}
+.cmdlet-card.focused{
+  border-color:var(--accent-primary);
+  box-shadow:0 0 0 2px var(--accent-glow);
+}
+.cmdlet-card.expanded{
+  grid-column:1/-1;
+  cursor:default;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.card-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.cmdlet-name{
+  font-size:.9rem;font-weight:600;
+  color:var(--text-primary);
+  flex:1;word-break:break-word;line-height:1.3;
+}
+.cmdlet-name a{
+  color:inherit;text-decoration:none;
+  border-bottom:1px solid transparent;
+  transition:border-color var(--transition);
+}
+.cmdlet-name a:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+.card-badges{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.badge{
+  padding:2px 7px;border-radius:20px;font-size:.68rem;font-weight:500;
+  white-space:nowrap;
+}
+.badge-module{background:rgba(255,255,255,0.1);color:var(--text-secondary);border:1px solid var(--border-subtle);}
+.badge-cat{color:#fff;}
+.badge-examples{background:rgba(100,210,255,0.15);color:#64d2ff;border:1px solid rgba(100,210,255,0.25);}
+.card-desc{
+  font-size:.8rem;color:var(--text-secondary);
+  line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-expand-icon{
+  flex-shrink:0;color:var(--text-tertiary);font-size:.75rem;
+  transition:transform var(--transition);margin-top:2px;
+}
+.cmdlet-card.expanded .card-expand-icon{transform:rotate(180deg);}
+
+/* expanded panel */
+.card-detail{
+  display:none;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--border-subtle);
+}
+.cmdlet-card.expanded .card-detail{display:block;}
+.detail-section{margin-bottom:16px;}
+.detail-section:last-child{margin-bottom:0;}
+.detail-title{
+  font-size:.72rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:8px;
+}
+.syntax-block{
+  background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-sm);padding:10px 12px;
+  font-family:var(--font-mono);font-size:.76rem;
+  color:#a9dc76;white-space:pre-wrap;word-break:break-all;
+  position:relative;
+}
+[data-theme="light"] .syntax-block{background:rgba(0,0,0,0.06);color:#2e7d32;}
+.params-table{width:100%;border-collapse:collapse;font-size:.79rem;}
+.params-table th{
+  text-align:left;padding:5px 8px;
+  font-weight:600;color:var(--text-tertiary);font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--border-subtle);
+}
+.params-table td{
+  padding:5px 8px;color:var(--text-secondary);
+  border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top;
+}
+[data-theme="light"] .params-table td{border-bottom-color:rgba(0,0,0,0.04);}
+.params-table td:first-child{
+  font-family:var(--font-mono);font-size:.75rem;
+  color:var(--accent-secondary);font-weight:500;
+}
+.param-required{color:var(--verb-remove);font-size:.7rem;font-weight:600;}
+.param-optional{color:var(--text-tertiary);font-size:.7rem;}
+.param-type{color:var(--text-tertiary);font-size:.73rem;}
+.example-block{
+  background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-sm);padding:10px 12px;
+  font-family:var(--font-mono);font-size:.78rem;
+  color:var(--text-primary);position:relative;margin-bottom:6px;
+}
+[data-theme="light"] .example-block{background:rgba(0,0,0,0.05);}
+.example-block:last-child{margin-bottom:0;}
+.copy-btn{
+  position:absolute;top:6px;right:6px;
+  background:var(--bg-layer3);border:1px solid var(--border-subtle);
+  color:var(--text-tertiary);border-radius:5px;
+  padding:2px 6px;font-size:.67rem;cursor:pointer;
+  transition:all var(--transition);font-family:var(--font-sans);
+}
+.copy-btn:hover{color:var(--accent-primary);border-color:var(--accent-primary);}
+.related-list{display:flex;flex-wrap:wrap;gap:6px;}
+.related-chip{
+  padding:3px 10px;border-radius:20px;font-size:.73rem;
+  background:var(--bg-layer2);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
+  font-family:var(--font-mono);
+}
+.related-chip:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+
+/* ── Lazy load sentinel ────────────────────────── */
+#loadSentinel{
+  grid-column:1/-1;height:60px;
+  display:flex;align-items:center;justify-content:center;
+}
+.loader{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border-medium);
+  border-top-color:var(--accent-primary);
+  animation:spin .8s linear infinite;
+  display:none;
+}
+.loader.active{display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Empty state ────────────────────────────────── */
+#emptyState{
+  grid-column:1/-1;
+  display:none;flex-direction:column;align-items:center;
+  padding:80px 20px;color:var(--text-tertiary);text-align:center;gap:12px;
+}
+#emptyState.show{display:flex;}
+.empty-icon{font-size:3rem;opacity:.4;}
+.empty-title{font-size:1rem;font-weight:600;color:var(--text-secondary);}
+.empty-sub{font-size:.85rem;}
+
+/* ── Back to top ────────────────────────────────── */
+#backToTop{
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--accent-primary);color:#fff;
+  border:none;cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(0,114,198,0.4);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;
+}
+#backToTop.show{opacity:1;pointer-events:all;}
+#backToTop:hover{transform:translateY(-3px);}
+
+/* ── Loading overlay ────────────────────────────── */
+#loadingOverlay{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg-base);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .4s;
+}
+#loadingOverlay.hidden{opacity:0;pointer-events:none;}
+.loading-logo{
+  width:56px;height:56px;border-radius:14px;
+  background:linear-gradient(135deg,#0072C6,#50a3e0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;font-weight:700;color:#fff;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.loading-text{font-size:.9rem;color:var(--text-secondary);}
+
+/* ── Keyboard shortcut hint ─────────────────────── */
+.kbd-hint{
+  display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--bg-modal);border:1px solid var(--border-medium);
+  border-radius:var(--radius-md);padding:8px 16px;
+  font-size:.75rem;color:var(--text-secondary);
+  box-shadow:var(--shadow-modal);z-index:150;gap:12px;
+  flex-wrap:wrap;justify-content:center;
+}
+.kbd-hint.show{display:flex;}
+kbd{
+  background:var(--bg-layer3);border:1px solid var(--border-medium);
+  border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.75rem;
+  color:var(--text-primary);
+}
+
+/* ── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-medium);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-tertiary);}
+
+/* ── Responsive ─────────────────────────────────── */
+@media(max-width:768px){
+  :root{--filter-h:140px;}
+  #alphaNav{display:none;}
+  #mainLayout{padding:12px 12px 80px;}
+  #cardsGrid{grid-template-columns:1fr;}
+  .header-meta,.header-stat{display:none;}
+  .theme-select{display:none;}
+}
+
+/* highlight tokens */
+.hl-cmdlet{color:#60a5fa;}
+.hl-param{color:#a78bfa;}
+.hl-string{color:#34d399;}
+.hl-variable{color:#fb923c;}
+.hl-comment{color:#6b7280;font-style:italic;}
+.hl-pipe{color:#e2e8f0;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="loading-logo">Az</div>
+  <div class="loading-text">Loading cmdlet index…</div>
+</div>
+
+<!-- Header -->
+<header id="appHeader">
+  <a href="#" class="logo">
+    <div class="logo-icon">Az</div>
+    <span>Az Index</span>
+  </a>
+  <div class="header-meta">
+    <span id="versionBadge">v—</span>
+  </div>
+  <div class="header-spacer"></div>
+  <div class="header-stat">
+    Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> cmdlets
+  </div>
+  <div class="header-actions">
+    <div class="export-wrap">
+      <button class="btn-primary" onclick="toggleExportMenu()" title="Export results">
+        <span>⬇</span> Export
+      </button>
+      <div class="export-menu" id="exportMenu">
+        <button onclick="exportResults('json')">📄 Export JSON</button>
+        <button onclick="exportResults('csv')">📊 Export CSV</button>
+      </div>
+    </div>
+    <button class="btn-icon" onclick="toggleAppearance()" id="appearanceBtn" title="Toggle light/dark">🌙</button>
+    <select class="theme-select" onchange="switchTheme(this.value)" id="themeSelect">
+      <option value="index.html">🪟 Acrylic</option>
+      <option value="cyberpunk.html">⚡ Cyberpunk</option>
+      <option value="crt.html">📺 CRT</option>
+      <option value="synthwave.html">🌆 Synthwave</option>
+      <option value="blueprint.html" selected>📐 Blueprint</option>
+      <option value="solarized.html">☀️ Solarized</option>
+      <option value="geocities.html">🌐 Geocities</option>
+    </select>
+  </div>
+</header>
+
+<!-- Filter Bar -->
+<div id="filterBar">
+  <div class="filter-row">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search cmdlets… (press / to focus)" autocomplete="off" spellcheck="false">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <div class="recent-dropdown" id="recentDropdown"></div>
+    </div>
+    <select class="filter-select" id="moduleFilter">
+      <option value="">All Modules</option>
+    </select>
+    <select class="filter-select" id="categoryFilter">
+      <option value="">All Categories</option>
+    </select>
+    <span class="sort-label">Sort:</span>
+    <select class="filter-select" id="sortSelect">
+      <option value="alpha">A–Z</option>
+      <option value="alpha-desc">Z–A</option>
+      <option value="module">Module</option>
+      <option value="verb">Verb</option>
+      <option value="category">Category</option>
+    </select>
+  </div>
+  <div class="verb-row">
+    <span class="verb-label">Verb:</span>
+    <div id="verbChips"></div>
+  </div>
+  <div class="preset-row">
+    <span class="preset-label">Presets:</span>
+    <div id="presetChips"></div>
+    <button class="btn-save-preset" onclick="savePreset()">+ Save filter</button>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div id="app">
+  <div id="mainLayout">
+    <nav id="alphaNav" aria-label="Alphabetical navigation"></nav>
+    <div id="cardsGrid">
+      <div id="emptyState">
+        <div class="empty-icon">🔭</div>
+        <div class="empty-title">No cmdlets found</div>
+        <div class="empty-sub">Try adjusting your search or filters</div>
+      </div>
+      <div id="loadSentinel"><div class="loader" id="loadSpinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<div class="kbd-hint" id="kbdHint">
+  <span><kbd>/</kbd> Search</span>
+  <span><kbd>J</kbd><kbd>K</kbd> Navigate</span>
+  <span><kbd>Enter</kbd> Expand</span>
+  <span><kbd>Esc</kbd> Clear</span>
+</div>
+
+<script>
+'use strict';
+// ── State ──────────────────────────────────────────────────────────────────
+let cmdlets = [];
+let filteredCmdlets = [];
+let activeVerbs = new Set();
+let renderedCount = 0;
+const CHUNK_SIZE = 50;
+let scrollObserver = null;
+let focusedCardIndex = -1;
+let recentSearches = JSON.parse(localStorage.getItem('azRecentSearches') || '[]');
+let currentSort = 'alpha';
+let savedPresets = JSON.parse(localStorage.getItem('azSavedPresets') || '[]');
+const moduleDetailCache = new Map();
+
+// ── Data Loading ────────────────────────────────────────────────────────────
+async function loadCmdlets() {
+  try {
+    const r = await fetch('data/manifest.json');
+    if (!r.ok) throw new Error('manifest.json not found');
+    const json = await r.json();
+    document.getElementById('versionBadge').textContent = 'v' + json.v;
+    cmdlets = json.d.map(c => ({
+      name: c.n, verb: c.v, module: c.m, category: c.c, hasExamples: c.e,
+      desc: '', syntax: '', examples: []
+    }));
+    document.getElementById('totalCount').textContent = cmdlets.length;
+    await loadDescriptions();
+    populateFilters();
+    restoreState();
+    filterCmdlets();
+    buildAlphaNav();
+    setTimeout(() => {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      setTimeout(() => document.getElementById('loadingOverlay').remove(), 500);
+    }, 300);
+    setTimeout(() => document.getElementById('kbdHint').classList.add('show'), 1000);
+    setTimeout(() => document.getElementById('kbdHint').classList.remove('show'), 5000);
+  } catch(e) {
+    document.getElementById('loadingOverlay').querySelector('.loading-text').textContent = 'Error: ' + e.message;
+  }
+}
+
+async function loadDescriptions() {
+  try {
+    const r = await fetch('data/descriptions.json');
+    if (!r.ok) return;
+    const descs = await r.json();
+    cmdlets.forEach(c => { c.desc = descs[c.name] || ''; });
+  } catch(_) {}
+}
+
+async function loadModuleDetail(moduleName) {
+  if (moduleDetailCache.has(moduleName)) return moduleDetailCache.get(moduleName);
+  try {
+    const r = await fetch(`data/modules/${moduleName}.json`);
+    if (!r.ok) { moduleDetailCache.set(moduleName, null); return null; }
+    const data = await r.json();
+    moduleDetailCache.set(moduleName, data);
+    return data;
+  } catch(_) { moduleDetailCache.set(moduleName, null); return null; }
+}
+
+// ── Fuzzy Search ────────────────────────────────────────────────────────────
+function fuzzyScore(query, target) {
+  if (!query) return 1;
+  const q = query.toLowerCase(), t = target.toLowerCase();
+  if (t === q) return 100;
+  if (t.startsWith(q)) return 90;
+  if (t.includes(q)) return 70;
+  let qi = 0, score = 0, consec = 0;
+  for (let i = 0; i < t.length && qi < q.length; i++) {
+    if (t[i] === q[qi]) { qi++; score += 10 + consec * 5; consec++; }
+    else consec = 0;
+  }
+  return qi === q.length ? score : 0;
+}
+
+// ── Filter & Sort ────────────────────────────────────────────────────────────
+function filterCmdlets() {
+  const q = document.getElementById('searchInput').value.trim();
+  const mod = document.getElementById('moduleFilter').value;
+  const cat = document.getElementById('categoryFilter').value;
+  currentSort = document.getElementById('sortSelect').value;
+  document.getElementById('searchClear').style.display = q ? 'block' : 'none';
+
+  filteredCmdlets = cmdlets.filter(c => {
+    if (mod && c.module !== mod) return false;
+    if (cat && c.category !== cat) return false;
+    if (activeVerbs.size && !activeVerbs.has(c.verb)) return false;
+    if (!q) return true;
+    const score = Math.max(
+      fuzzyScore(q, c.name),
+      fuzzyScore(q, c.module),
+      fuzzyScore(q, c.category),
+      fuzzyScore(q, c.verb),
+      q.length > 3 ? fuzzyScore(q, c.desc) * 0.5 : 0
+    );
+    return score > 0;
+  });
+
+  filteredCmdlets.sort((a, b) => {
+    if (currentSort === 'alpha') return a.name.localeCompare(b.name);
+    if (currentSort === 'alpha-desc') return b.name.localeCompare(a.name);
+    if (currentSort === 'module') return a.module.localeCompare(b.module) || a.name.localeCompare(b.name);
+    if (currentSort === 'verb') return a.verb.localeCompare(b.verb) || a.name.localeCompare(b.name);
+    if (currentSort === 'category') return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+    return 0;
+  });
+
+  document.getElementById('showingCount').textContent = filteredCmdlets.length;
+  focusedCardIndex = -1;
+  renderCmdlets();
+  serializeState();
+
+  if (q && !recentSearches.includes(q)) {
+    recentSearches.unshift(q);
+    recentSearches = recentSearches.slice(0, 8);
+    localStorage.setItem('azRecentSearches', JSON.stringify(recentSearches));
+  }
+}
+
+// ── Rendering ────────────────────────────────────────────────────────────────
+function verbColor(verb) {
+  const v = verb.toLowerCase();
+  if (['get','find','search'].includes(v)) return 'var(--verb-get)';
+  if (['set','update','edit'].includes(v)) return 'var(--verb-set)';
+  if (['new','add','register'].includes(v)) return 'var(--verb-new)';
+  if (['remove','delete','clear','unregister'].includes(v)) return 'var(--verb-remove)';
+  if (['start','enable'].includes(v)) return 'var(--verb-start)';
+  if (['stop','disable'].includes(v)) return 'var(--verb-stop)';
+  if (['connect','disconnect'].includes(v)) return 'var(--verb-connect)';
+  if (['invoke','test'].includes(v)) return 'var(--verb-invoke)';
+  if (['import','export'].includes(v)) return 'var(--verb-import)';
+  if (['restart'].includes(v)) return 'var(--verb-set)';
+  return 'var(--verb-default)';
+}
+function catColor(cat) {
+  const c = cat.toLowerCase();
+  if (c.includes('compute')) return 'var(--cat-compute)';
+  if (c.includes('network')) return 'var(--cat-network)';
+  if (c.includes('storage')) return 'var(--cat-storage)';
+  if (c.includes('security')||c.includes('identity')) return 'var(--cat-security)';
+  if (c.includes('auth')) return 'var(--cat-auth)';
+  if (c.includes('resource')) return 'var(--cat-resources)';
+  return 'var(--cat-default)';
+}
+
+function buildCardHtml(c, animDelay) {
+  const learnUrl = `https://learn.microsoft.com/powershell/module/${c.module.toLowerCase()}/${c.name.toLowerCase()}`;
+  const moduleShort = c.module.replace(/^Az\./,'');
+  const vc = verbColor(c.verb);
+  const cc = catColor(c.category);
+  const descTrunc = c.desc.length > 120 ? c.desc.slice(0,120)+'…' : c.desc;
+  return `
+<div class="cmdlet-card" data-name="${escHtml(c.name)}" data-module="${escHtml(c.module)}"
+     style="--verb-color:${vc};animation-delay:${animDelay}ms"
+     onclick="toggleCard(this)"
+     tabindex="0" role="article" aria-expanded="false">
+  <div class="card-header">
+    <div class="cmdlet-name">
+      <a href="${learnUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="View on Microsoft Learn">${escHtml(c.name)}</a>
+    </div>
+    <span class="card-expand-icon">▼</span>
+  </div>
+  <div class="card-badges">
+    <span class="badge badge-module">${escHtml(moduleShort)}</span>
+    <span class="badge badge-cat" style="background:${cc}22;color:${cc};border:1px solid ${cc}44">${escHtml(c.category)}</span>
+    ${c.hasExamples ? '<span class="badge badge-examples">Examples</span>' : ''}
+  </div>
+  <div class="card-desc">${escHtml(descTrunc || 'No description available.')}</div>
+  <div class="card-detail" id="detail-${escHtml(c.name)}">
+    <div class="detail-loading">Loading details…</div>
+  </div>
+</div>`;
+}
+
+function renderCmdlets() {
+  const grid = document.getElementById('cardsGrid');
+  const sentinel = document.getElementById('loadSentinel');
+  const empty = document.getElementById('emptyState');
+  // remove old cards
+  Array.from(grid.querySelectorAll('.cmdlet-card')).forEach(el => el.remove());
+  renderedCount = 0;
+  if (filteredCmdlets.length === 0) {
+    empty.classList.add('show');
+    sentinel.style.display = 'none';
+    if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
+    return;
+  }
+  empty.classList.remove('show');
+  sentinel.style.display = '';
+  renderNextChunk();
+  setupScrollObserver();
+}
+
+function renderNextChunk() {
+  if (renderedCount >= filteredCmdlets.length) {
+    document.getElementById('loadSpinner').classList.remove('active');
+    return;
+  }
+  const grid = document.getElementById('cardsGrid');
+  const sentinel = document.getElementById('loadSentinel');
+  const end = Math.min(renderedCount + CHUNK_SIZE, filteredCmdlets.length);
+  const frag = document.createDocumentFragment();
+  const tmp = document.createElement('div');
+  for (let i = renderedCount; i < end; i++) {
+    tmp.innerHTML = buildCardHtml(filteredCmdlets[i], (i - renderedCount) * 20);
+    frag.appendChild(tmp.firstElementChild);
+  }
+  grid.insertBefore(frag, sentinel);
+  renderedCount = end;
+  if (renderedCount >= filteredCmdlets.length) {
+    document.getElementById('loadSpinner').classList.remove('active');
+  }
+}
+
+function setupScrollObserver() {
+  if (scrollObserver) scrollObserver.disconnect();
+  const sentinel = document.getElementById('loadSentinel');
+  scrollObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && renderedCount < filteredCmdlets.length) {
+      document.getElementById('loadSpinner').classList.add('active');
+      setTimeout(renderNextChunk, 100);
+    }
+  }, { rootMargin: '200px' });
+  scrollObserver.observe(sentinel);
+}
+
+// ── Card toggle & detail ─────────────────────────────────────────────────────
+async function toggleCard(el) {
+  const wasExpanded = el.classList.contains('expanded');
+  // collapse all
+  document.querySelectorAll('.cmdlet-card.expanded').forEach(c => {
+    c.classList.remove('expanded');
+    c.setAttribute('aria-expanded','false');
+  });
+  if (wasExpanded) return;
+  el.classList.add('expanded');
+  el.setAttribute('aria-expanded','true');
+  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  const name = el.dataset.name;
+  const module = el.dataset.module;
+  const detailEl = el.querySelector('.card-detail');
+  if (detailEl.dataset.loaded) return;
+  detailEl.dataset.loaded = '1';
+
+  const data = await loadModuleDetail(module);
+  const cmdletData = data && data.cmdlets && data.cmdlets[name];
+  const cmdlet = cmdlets.find(c => c.name === name);
+
+  const syntax = cmdletData ? cmdletData.syntax : '';
+  const examples = cmdletData ? (cmdletData.examples || []) : [];
+  const params = syntax ? parseParameters(syntax) : [];
+  const related = findRelated(cmdlet);
+
+  detailEl.innerHTML = `
+    ${syntax ? `<div class="detail-section">
+      <div class="detail-title">Syntax</div>
+      <div class="syntax-block">${highlightPowerShell(escHtml(syntax))}</div>
+    </div>` : ''}
+    ${params.length ? `<div class="detail-section">
+      <div class="detail-title">Parameters</div>
+      <table class="params-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Required</th></tr></thead>
+        <tbody>${params.map(p => `<tr>
+          <td>-${escHtml(p.name)}</td>
+          <td class="param-type">${escHtml(p.type || 'Switch')}</td>
+          <td>${p.required ? '<span class="param-required">Required</span>' : '<span class="param-optional">Optional</span>'}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>` : ''}
+    ${examples.length ? `<div class="detail-section">
+      <div class="detail-title">Examples</div>
+      ${examples.map(ex => `<div class="example-block">
+        <button class="copy-btn" onclick="copyText(this, ${JSON.stringify(ex)})">Copy</button>
+        ${highlightPowerShell(escHtml(ex))}
+      </div>`).join('')}
+    </div>` : ''}
+    ${related.length ? `<div class="detail-section">
+      <div class="detail-title">Related Cmdlets</div>
+      <div class="related-list">${related.map(r =>
+        `<span class="related-chip" onclick="jumpTo('${escHtml(r)}')">${escHtml(r)}</span>`
+      ).join('')}</div>
+    </div>` : ''}
+    <div class="detail-section" style="font-size:.73rem;color:var(--text-tertiary)">
+      <a href="https://learn.microsoft.com/powershell/module/${escHtml(module.toLowerCase())}/${escHtml(name.toLowerCase())}"
+         target="_blank" rel="noopener" style="color:var(--accent-primary)">
+        📖 View full documentation on Microsoft Learn →
+      </a>
+    </div>
+  `;
+}
+
+function findRelated(cmdlet) {
+  if (!cmdlet) return [];
+  const noun = cmdlet.name.replace(/^[A-Za-z]+-Az/, '');
+  return cmdlets
+    .filter(c => c.name !== cmdlet.name && (
+      c.name.endsWith(noun) ||
+      c.module === cmdlet.module && c.name !== cmdlet.name
+    ))
+    .slice(0, 6).map(c => c.name);
+}
+
+function jumpTo(name) {
+  document.querySelectorAll('.cmdlet-card.expanded').forEach(c => c.classList.remove('expanded'));
+  const el = document.querySelector(`.cmdlet-card[data-name="${name}"]`);
+  if (el) {
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    toggleCard(el);
+  } else {
+    document.getElementById('searchInput').value = name;
+    filterCmdlets();
+    setTimeout(() => {
+      const card = document.querySelector(`.cmdlet-card[data-name="${name}"]`);
+      if (card) { card.scrollIntoView({behavior:'smooth'}); toggleCard(card); }
+    }, 400);
+  }
+}
+
+// ── Parameter parsing ────────────────────────────────────────────────────────
+const SKIP_PARAMS = new Set(['WhatIf','Confirm','DefaultProfile','CommonParameters',
+  'Break','HttpPipelineAppend','HttpPipelinePrepend','Proxy','ProxyCredential',
+  'ProxyUseDefaultCredentials','ProgressAction']);
+
+function parseParameters(syntax) {
+  const params = [];
+  const seen = new Set();
+  // required: [-ParamName] <Type>  or  -ParamName <Type>
+  const re = /\[?-([A-Za-z][A-Za-z0-9_]*)\]?(?:\s+(?:<([^>]+)>|\[<([^>]+)>\]))?/g;
+  let m;
+  while ((m = re.exec(syntax)) !== null) {
+    const name = m[1];
+    if (SKIP_PARAMS.has(name) || seen.has(name)) continue;
+    seen.add(name);
+    const type = m[2] || m[3] || null;
+    // required if not wrapped in outer []
+    const chunk = syntax.slice(Math.max(0, m.index - 1), m.index + 20);
+    const required = !syntax.slice(Math.max(0, m.index - 2), m.index).includes('[') &&
+                     !m[0].startsWith('[-');
+    params.push({ name, type, required });
+  }
+  return params.slice(0, 20);
+}
+
+// ── Syntax highlighting ──────────────────────────────────────────────────────
+function highlightPowerShell(code) {
+  return code
+    .replace(/(&amp;|&lt;|&gt;)/g, s => s) // keep entities
+    .replace(/(#[^\n]*)/g, '<span class="hl-comment">$1</span>')
+    .replace(/('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/g, '<span class="hl-string">$1</span>')
+    .replace(/(\$[\w:]+)/g, '<span class="hl-variable">$1</span>')
+    .replace(/(\|)/g, '<span class="hl-pipe">$1</span>')
+    .replace(/\b(Get|Set|New|Remove|Add|Start|Stop|Restart|Update|Connect|Disconnect|Invoke|Import|Export|Test|Enable|Disable|Select|Where|ForEach|Out|Write|Read|Format|ConvertTo|ConvertFrom|Measure|Group|Sort|Tee)-([A-Za-z][A-Za-z0-9]*)/g,
+      '<span class="hl-cmdlet">$1-$2</span>')
+    .replace(/\s(-[A-Za-z][A-Za-z0-9]*)/g, ' <span class="hl-param">$1</span>');
+}
+
+// ── Populate filters ─────────────────────────────────────────────────────────
+function populateFilters() {
+  const modules = [...new Set(cmdlets.map(c => c.module))].sort();
+  const cats = [...new Set(cmdlets.map(c => c.category))].sort();
+  const verbs = [...new Set(cmdlets.map(c => c.verb))].sort();
+
+  const modSel = document.getElementById('moduleFilter');
+  modules.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m.replace(/^Az\./,'');
+    modSel.appendChild(o);
+  });
+
+  const catSel = document.getElementById('categoryFilter');
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    catSel.appendChild(o);
+  });
+
+  const verbDiv = document.getElementById('verbChips');
+  verbs.forEach(v => {
+    const el = document.createElement('span');
+    el.className = 'verb-chip';
+    el.textContent = v;
+    el.dataset.verb = v;
+    el.style.cssText = activeVerbs.has(v)
+      ? `background:${verbColor(v)};color:#fff;border-color:transparent`
+      : '';
+    el.onclick = () => toggleVerb(v, el);
+    verbDiv.appendChild(el);
+  });
+}
+
+function toggleVerb(verb, el) {
+  if (activeVerbs.has(verb)) {
+    activeVerbs.delete(verb);
+    el.classList.remove('active');
+    el.style.background = '';
+    el.style.color = '';
+    el.style.borderColor = '';
+  } else {
+    activeVerbs.add(verb);
+    el.classList.add('active');
+    el.style.background = verbColor(verb);
+    el.style.color = '#fff';
+    el.style.borderColor = 'transparent';
+  }
+  filterCmdlets();
+}
+
+// ── Alpha Nav ────────────────────────────────────────────────────────────────
+function buildAlphaNav() {
+  const nav = document.getElementById('alphaNav');
+  const letters = [...new Set(cmdlets.map(c => c.name[0].toUpperCase()))].sort();
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+    const a = document.createElement('a');
+    a.className = 'alpha-link' + (letters.includes(l) ? '' : ' disabled');
+    a.textContent = l;
+    a.style.opacity = letters.includes(l) ? '1' : '0.2';
+    if (letters.includes(l)) {
+      a.onclick = (e) => {
+        e.preventDefault();
+        const card = document.querySelector(`.cmdlet-card[data-name^="${l}"]`);
+        if (card) card.scrollIntoView({behavior:'smooth', block:'start'});
+        else {
+          // search for first match
+          document.getElementById('searchInput').value = '';
+          document.getElementById('moduleFilter').value = '';
+          filterCmdlets();
+          setTimeout(() => {
+            const c2 = document.querySelector(`.cmdlet-card[data-name^="${l}"]`);
+            if (c2) c2.scrollIntoView({behavior:'smooth'});
+          }, 300);
+        }
+      };
+    }
+    nav.appendChild(a);
+  });
+}
+
+function updateStats() {
+  document.getElementById('showingCount').textContent = filteredCmdlets.length;
+}
+
+// ── Presets ──────────────────────────────────────────────────────────────────
+function savePreset() {
+  const name = prompt('Preset name:');
+  if (!name) return;
+  const q = document.getElementById('searchInput').value;
+  const mod = document.getElementById('moduleFilter').value;
+  const cat = document.getElementById('categoryFilter').value;
+  savedPresets.push({ name, q, mod, cat, verbs: [...activeVerbs] });
+  localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets));
+  renderPresets();
+}
+function loadPreset(idx) {
+  const p = savedPresets[idx];
+  if (!p) return;
+  document.getElementById('searchInput').value = p.q || '';
+  document.getElementById('moduleFilter').value = p.mod || '';
+  document.getElementById('categoryFilter').value = p.cat || '';
+  activeVerbs = new Set(p.verbs || []);
+  document.querySelectorAll('.verb-chip').forEach(el => {
+    const v = el.dataset.verb;
+    if (activeVerbs.has(v)) {
+      el.classList.add('active');
+      el.style.background = verbColor(v);
+      el.style.color = '#fff';
+      el.style.borderColor = 'transparent';
+    } else {
+      el.classList.remove('active');
+      el.style.background = '';
+      el.style.color = '';
+      el.style.borderColor = '';
+    }
+  });
+  filterCmdlets();
+}
+function deletePreset(idx) {
+  savedPresets.splice(idx, 1);
+  localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets));
+  renderPresets();
+}
+function renderPresets() {
+  const div = document.getElementById('presetChips');
+  div.innerHTML = '';
+  savedPresets.forEach((p, i) => {
+    const el = document.createElement('span');
+    el.className = 'preset-chip';
+    el.innerHTML = `<span onclick="loadPreset(${i})">${escHtml(p.name)}</span>
+      <span class="preset-del" onclick="deletePreset(${i});event.stopPropagation()">✕</span>`;
+    div.appendChild(el);
+  });
+}
+
+// ── State serialization ───────────────────────────────────────────────────────
+function serializeState() {
+  const q = document.getElementById('searchInput').value;
+  const mod = document.getElementById('moduleFilter').value;
+  const cat = document.getElementById('categoryFilter').value;
+  const sort = document.getElementById('sortSelect').value;
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (mod) params.set('m', mod);
+  if (cat) params.set('c', cat);
+  if (activeVerbs.size) params.set('v', [...activeVerbs].join(','));
+  if (sort !== 'alpha') params.set('s', sort);
+  const hash = params.toString();
+  history.replaceState(null, '', hash ? '#' + hash : location.pathname);
+}
+
+function restoreState() {
+  const hash = location.hash.replace('#','');
+  if (!hash) return;
+  try {
+    const params = new URLSearchParams(hash);
+    if (params.get('q')) document.getElementById('searchInput').value = params.get('q');
+    if (params.get('m')) document.getElementById('moduleFilter').value = params.get('m');
+    if (params.get('c')) document.getElementById('categoryFilter').value = params.get('c');
+    if (params.get('s')) document.getElementById('sortSelect').value = params.get('s');
+    if (params.get('v')) {
+      params.get('v').split(',').forEach(v => activeVerbs.add(v));
+    }
+  } catch(_) {}
+}
+
+// ── Export ────────────────────────────────────────────────────────────────────
+function exportResults(fmt) {
+  document.getElementById('exportMenu').classList.remove('open');
+  const data = filteredCmdlets.map(c => ({
+    name: c.name, verb: c.verb, module: c.module, category: c.category,
+    description: c.desc,
+    learnUrl: `https://learn.microsoft.com/powershell/module/${c.module.toLowerCase()}/${c.name.toLowerCase()}`
+  }));
+  if (fmt === 'json') {
+    download('az-cmdlets.json', JSON.stringify(data, null, 2), 'application/json');
+  } else {
+    const headers = ['name','verb','module','category','description','learnUrl'];
+    const rows = [headers.join(','), ...data.map(r =>
+      headers.map(h => `"${(r[h]||'').toString().replace(/"/g,'""')}"`).join(',')
+    )];
+    download('az-cmdlets.csv', rows.join('\n'), 'text/csv');
+  }
+}
+function download(name, content, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], {type}));
+  a.download = name; a.click();
+}
+
+// ── Recent Searches ───────────────────────────────────────────────────────────
+function showRecentSearches() {
+  if (!recentSearches.length) return;
+  const dd = document.getElementById('recentDropdown');
+  dd.innerHTML = recentSearches.map(s =>
+    `<div class="recent-item" onclick="applyRecent('${escHtml(s)}')">
+      <span class="recent-icon">⏱</span>${escHtml(s)}
+    </div>`
+  ).join('');
+  dd.classList.add('open');
+}
+function applyRecent(s) {
+  document.getElementById('searchInput').value = s;
+  document.getElementById('recentDropdown').classList.remove('open');
+  filterCmdlets();
+}
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  filterCmdlets();
+}
+
+// ── Appearance ────────────────────────────────────────────────────────────────
+function toggleAppearance() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  localStorage.setItem('azTheme', html.dataset.theme);
+  updateAppearanceIcon();
+}
+function updateAppearanceIcon() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.getElementById('appearanceBtn').textContent = isDark ? '🌙' : '☀️';
+}
+(function initTheme() {
+  const saved = localStorage.getItem('azTheme');
+  if (saved) document.documentElement.dataset.theme = saved;
+  updateAppearanceIcon && updateAppearanceIcon();
+})();
+
+function switchTheme(url) { if (url) window.location.href = url; }
+function toggleExportMenu() {
+  document.getElementById('exportMenu').classList.toggle('open');
+}
+
+// ── Copy to clipboard ─────────────────────────────────────────────────────────
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+// ── Keyboard navigation ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !e.ctrlKey && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+    return;
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').blur();
+    document.getElementById('recentDropdown').classList.remove('open');
+    document.querySelectorAll('.cmdlet-card.expanded').forEach(c => c.classList.remove('expanded'));
+    return;
+  }
+  if (document.activeElement.tagName === 'INPUT') return;
+  const cards = Array.from(document.querySelectorAll('.cmdlet-card'));
+  if (!cards.length) return;
+  if (e.key === 'j' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    focusedCardIndex = Math.min(focusedCardIndex + 1, cards.length - 1);
+    updateCardFocus(cards);
+  } else if (e.key === 'k' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    focusedCardIndex = Math.max(focusedCardIndex - 1, 0);
+    updateCardFocus(cards);
+  } else if (e.key === 'Enter' && focusedCardIndex >= 0) {
+    toggleCard(cards[focusedCardIndex]);
+  }
+});
+function updateCardFocus(cards) {
+  cards.forEach(c => c.classList.remove('focused'));
+  if (focusedCardIndex >= 0) {
+    cards[focusedCardIndex].classList.add('focused');
+    cards[focusedCardIndex].scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+
+// ── Back to top ────────────────────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+});
+
+// ── Utility ────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function debounce(fn, ms) {
+  let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}
+
+// ── Close dropdowns on outside click ─────────────────────────────────────────
+document.addEventListener('click', e => {
+  if (!e.target.closest('.export-wrap')) {
+    document.getElementById('exportMenu').classList.remove('open');
+  }
+  if (!e.target.closest('.search-wrap')) {
+    document.getElementById('recentDropdown').classList.remove('open');
+  }
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // restore theme before render
+  const saved = localStorage.getItem('azTheme');
+  if (saved) document.documentElement.dataset.theme = saved;
+  updateAppearanceIcon();
+  renderPresets();
+
+  const si = document.getElementById('searchInput');
+  si.addEventListener('input', debounce(filterCmdlets, 180));
+  si.addEventListener('focus', () => {
+    if (!si.value && recentSearches.length) showRecentSearches();
+  });
+  si.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      document.getElementById('recentDropdown').classList.remove('open');
+      filterCmdlets();
+    }
+  });
+
+  document.getElementById('moduleFilter').addEventListener('change', filterCmdlets);
+  document.getElementById('categoryFilter').addEventListener('change', filterCmdlets);
+  document.getElementById('sortSelect').addEventListener('change', filterCmdlets);
+
+  loadCmdlets();
+});
+</script>
+</body>
+</html>

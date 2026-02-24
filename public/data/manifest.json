@@ -1,0 +1,22 @@
+{"v":"15.3.0","d":[
+  {"n":"Connect-AzAccount","v":"Connect","m":"Az.Accounts","c":"Authentication","e":true},
+  {"n":"Disconnect-AzAccount","v":"Disconnect","m":"Az.Accounts","c":"Authentication","e":true},
+  {"n":"Get-AzContext","v":"Get","m":"Az.Accounts","c":"Authentication","e":true},
+  {"n":"Set-AzContext","v":"Set","m":"Az.Accounts","c":"Authentication","e":true},
+  {"n":"Get-AzSubscription","v":"Get","m":"Az.Accounts","c":"Authentication","e":true},
+  {"n":"New-AzVM","v":"New","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Get-AzVM","v":"Get","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Remove-AzVM","v":"Remove","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Start-AzVM","v":"Start","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Stop-AzVM","v":"Stop","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Restart-AzVM","v":"Restart","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"Update-AzVM","v":"Update","m":"Az.Compute","c":"Compute","e":true},
+  {"n":"New-AzVirtualNetwork","v":"New","m":"Az.Network","c":"Networking","e":true},
+  {"n":"Get-AzVirtualNetwork","v":"Get","m":"Az.Network","c":"Networking","e":true},
+  {"n":"Remove-AzVirtualNetwork","v":"Remove","m":"Az.Network","c":"Networking","e":true},
+  {"n":"New-AzNetworkSecurityGroup","v":"New","m":"Az.Network","c":"Networking","e":true},
+  {"n":"Get-AzNetworkSecurityGroup","v":"Get","m":"Az.Network","c":"Networking","e":true},
+  {"n":"New-AzPublicIpAddress","v":"New","m":"Az.Network","c":"Networking","e":true},
+  {"n":"Get-AzPublicIpAddress","v":"Get","m":"Az.Network","c":"Networking","e":true},
+  {"n":"Get-AzResourceGroup","v":"Get","m":"Az.Resources","c":"Resources","e":true}
+]}
