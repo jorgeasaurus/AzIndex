@@ -1,0 +1,22 @@
+{
+  "Connect-AzAccount": "Connect to Azure with an authenticated account for use with cmdlets from the Az PowerShell modules.",
+  "Disconnect-AzAccount": "Disconnects a logged-in account and removes all credential and context information associated with that account.",
+  "Get-AzContext": "Gets the metadata used to authenticate Azure Resource Manager requests.",
+  "Set-AzContext": "Sets the tenant, subscription, and environment for cmdlets to use in the current session.",
+  "Get-AzSubscription": "Gets subscription ID, subscription name, and home tenant for subscriptions that the current account can access.",
+  "New-AzVM": "Creates a new virtual machine in Azure.",
+  "Get-AzVM": "Gets the properties of a virtual machine.",
+  "Remove-AzVM": "Removes a virtual machine from Azure.",
+  "Start-AzVM": "Starts an Azure virtual machine.",
+  "Stop-AzVM": "Stops an Azure virtual machine.",
+  "Restart-AzVM": "Restarts an Azure virtual machine.",
+  "Update-AzVM": "Updates the state of an Azure virtual machine.",
+  "New-AzVirtualNetwork": "Creates a virtual network.",
+  "Get-AzVirtualNetwork": "Gets a virtual network in a resource group.",
+  "Remove-AzVirtualNetwork": "Removes a virtual network.",
+  "New-AzNetworkSecurityGroup": "Creates a network security group.",
+  "Get-AzNetworkSecurityGroup": "Gets a network security group.",
+  "New-AzPublicIpAddress": "Creates a public IP address.",
+  "Get-AzPublicIpAddress": "Gets a public IP address resource.",
+  "Get-AzResourceGroup": "Gets resource groups."
+}

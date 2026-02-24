@@ -1,0 +1,22 @@
+{"module":"Az.Accounts","version":"4.1.0","cmdlets":{
+  "Connect-AzAccount":{
+    "syntax":"Connect-AzAccount [-Environment <String>] [-Tenant <String>] [-Subscription <String>] [-AuthScope <String>] [-UseDeviceAuthentication] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Connect-AzAccount", "Connect-AzAccount -UseDeviceAuthentication", "Connect-AzAccount -ServicePrincipal -ApplicationId 'http://MyApp' -Credential $cred -Tenant $tenant"]
+  },
+  "Disconnect-AzAccount":{
+    "syntax":"Disconnect-AzAccount [[-ContextName] <String>] [-Force] [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Disconnect-AzAccount", "Get-AzContext | Disconnect-AzAccount"]
+  },
+  "Get-AzContext":{
+    "syntax":"Get-AzContext [-ListAvailable] [-RefreshContextFromTokenCache] [<CommonParameters>]",
+    "examples":["Get-AzContext", "Get-AzContext -ListAvailable"]
+  },
+  "Set-AzContext":{
+    "syntax":"Set-AzContext -Subscription <String> [-Tenant <String>] [-Name <String>] [-Force] [-ExtendedProperty <Hashtable>] [-Scope <ContextModificationScope>] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Set-AzContext -Subscription 'xxxx-xxxx-xxxx-xxxx'", "Set-AzContext -Subscription $sub -Tenant $tenant"]
+  },
+  "Get-AzSubscription":{
+    "syntax":"Get-AzSubscription [[-SubscriptionId] <String>] [[-TenantId] <String>] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzSubscription", "Get-AzSubscription -TenantId '00000000-0000-0000-0000-000000000000'"]
+  }
+}}

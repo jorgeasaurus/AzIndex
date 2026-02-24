@@ -1,0 +1,6 @@
+{"module":"Az.Resources","version":"7.7.0","cmdlets":{
+  "Get-AzResourceGroup":{
+    "syntax":"Get-AzResourceGroup [[-Name] <String>] [[-Location] <String>] [-Tag <Hashtable>] [-Id <String>] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzResourceGroup", "Get-AzResourceGroup -Name 'MyRG'", "Get-AzResourceGroup -Location 'EastUS'"]
+  }
+}}

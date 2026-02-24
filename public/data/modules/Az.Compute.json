@@ -1,0 +1,30 @@
+{"module":"Az.Compute","version":"9.1.0","cmdlets":{
+  "New-AzVM":{
+    "syntax":"New-AzVM [-ResourceGroupName] <String> [-Location] <String> [-Name] <String> [-Credential] <PSCredential> [-VirtualNetworkName <String>] [-SubnetName <String>] [-SecurityGroupName <String>] [-PublicIpAddressName <String>] [-DomainNameLabel <String>] [-AllocationMethod <String>] [-Size <String>] [-Image <String>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["New-AzVM -ResourceGroupName 'MyRG' -Location 'EastUS' -Name 'MyVM' -Credential (Get-Credential)", "New-AzVM -ResourceGroupName 'MyRG' -Location 'EastUS' -Name 'MyVM' -Image UbuntuLTS -Credential $cred"]
+  },
+  "Get-AzVM":{
+    "syntax":"Get-AzVM [[-ResourceGroupName] <String>] [[-Name] <String>] [-Status] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzVM", "Get-AzVM -ResourceGroupName 'MyRG'", "Get-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM' -Status"]
+  },
+  "Remove-AzVM":{
+    "syntax":"Remove-AzVM [-ResourceGroupName] <String> [-Name] <String> [-Force] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Remove-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM'"]
+  },
+  "Start-AzVM":{
+    "syntax":"Start-AzVM [-ResourceGroupName] <String> [-Name] <String> [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Start-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM'"]
+  },
+  "Stop-AzVM":{
+    "syntax":"Stop-AzVM [-ResourceGroupName] <String> [-Name] <String> [-Force] [-StayProvisioned] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Stop-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM'", "Stop-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM' -StayProvisioned"]
+  },
+  "Restart-AzVM":{
+    "syntax":"Restart-AzVM [-ResourceGroupName] <String> [-Name] <String> [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Restart-AzVM -ResourceGroupName 'MyRG' -Name 'MyVM'"]
+  },
+  "Update-AzVM":{
+    "syntax":"Update-AzVM -ResourceGroupName <String> -VM <PSVirtualMachine> [-Tag <Hashtable>] [-OsDiskWriteAccelerator <Boolean>] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Update-AzVM -ResourceGroupName 'MyRG' -VM $vm"]
+  }
+}}

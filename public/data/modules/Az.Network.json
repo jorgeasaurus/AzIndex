@@ -1,0 +1,30 @@
+{"module":"Az.Network","version":"7.12.0","cmdlets":{
+  "New-AzVirtualNetwork":{
+    "syntax":"New-AzVirtualNetwork -ResourceGroupName <String> -Location <String> -Name <String> -AddressPrefix <String[]> [-DnsServer <String[]>] [-Tag <Hashtable>] [-Force] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["New-AzVirtualNetwork -ResourceGroupName 'MyRG' -Location 'EastUS' -Name 'MyVNet' -AddressPrefix '10.0.0.0/16'"]
+  },
+  "Get-AzVirtualNetwork":{
+    "syntax":"Get-AzVirtualNetwork [-ResourceGroupName <String>] [-Name <String>] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzVirtualNetwork", "Get-AzVirtualNetwork -ResourceGroupName 'MyRG' -Name 'MyVNet'"]
+  },
+  "Remove-AzVirtualNetwork":{
+    "syntax":"Remove-AzVirtualNetwork -ResourceGroupName <String> -Name <String> [-PassThru] [-Force] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["Remove-AzVirtualNetwork -ResourceGroupName 'MyRG' -Name 'MyVNet'"]
+  },
+  "New-AzNetworkSecurityGroup":{
+    "syntax":"New-AzNetworkSecurityGroup -ResourceGroupName <String> -Location <String> -Name <String> [-SecurityRules <PSSecurityRule[]>] [-Tag <Hashtable>] [-Force] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["New-AzNetworkSecurityGroup -ResourceGroupName 'MyRG' -Location 'EastUS' -Name 'MyNSG'"]
+  },
+  "Get-AzNetworkSecurityGroup":{
+    "syntax":"Get-AzNetworkSecurityGroup [-ResourceGroupName <String>] [-Name <String>] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzNetworkSecurityGroup", "Get-AzNetworkSecurityGroup -ResourceGroupName 'MyRG' -Name 'MyNSG'"]
+  },
+  "New-AzPublicIpAddress":{
+    "syntax":"New-AzPublicIpAddress -ResourceGroupName <String> -Location <String> -Name <String> -AllocationMethod <String> [-Sku <String>] [-DomainNameLabel <String>] [-Tag <Hashtable>] [-Force] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]",
+    "examples":["New-AzPublicIpAddress -ResourceGroupName 'MyRG' -Location 'EastUS' -Name 'MyPublicIP' -AllocationMethod Dynamic"]
+  },
+  "Get-AzPublicIpAddress":{
+    "syntax":"Get-AzPublicIpAddress [-ResourceGroupName <String>] [-Name <String>] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]",
+    "examples":["Get-AzPublicIpAddress", "Get-AzPublicIpAddress -ResourceGroupName 'MyRG' -Name 'MyPublicIP'"]
+  }
+}}
