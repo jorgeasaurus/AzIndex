@@ -1,1336 +1,1756 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Az Index — Blueprint</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --accent-primary: #4d9de0;
-  --accent-secondary: #7bb8e8;
-  --accent-glow: rgba(77,157,224,0.3);
-  --bg-base: #0a1628;
-  --bg-layer1: rgba(77,157,224,0.06);
-  --bg-layer2: rgba(77,157,224,0.1);
-  --bg-layer3: rgba(77,157,224,0.15);
-  --bg-modal: rgba(8,16,32,0.97);
-  --border-subtle: rgba(77,157,224,0.2);
-  --border-medium: rgba(77,157,224,0.35);
-  --text-primary: #c8e0f4;
-  --text-secondary: #8ab0cc;
-  --text-tertiary: #3a5c7a;
-  --radius-sm: 3px;
-  --radius-md: 5px;
-  --radius-lg: 8px;
-  --radius-xl: 10px;
-  --header-h: 64px;
-  --filter-h: 112px;
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
-  --shadow-modal: 0 24px 80px rgba(0,0,0,0.6);
-  --transition: 0.18s ease;
-  --verb-get: #4db8a0;
-  --verb-set: #d4a843;
-  --verb-new: #4d9de0;
-  --verb-remove: #c44a4a;
-  --verb-start: #4db8cc;
-  --verb-stop: #6080a0;
-  --verb-connect: #9070d0;
-  --verb-invoke: #70b8d0;
-  --verb-import: #d4c040;
-  --verb-default: #3a5c7a;
-  --cat-compute: #d4a843;
-  --cat-network: #4d9de0;
-  --cat-storage: #4db8a0;
-  --cat-security: #c44a4a;
-  --cat-auth: #9070d0;
-  --cat-resources: #4db8cc;
-  --cat-default: #3a5c7a;
-}
-[data-theme="light"] {
-  --bg-base: #0a1628;
-  --text-primary: #c8e0f4;
-  --text-secondary: #8ab0cc;
-  --text-tertiary: #3a5c7a;
-  --bg-layer1: rgba(77,157,224,0.06);
-  --bg-layer2: rgba(77,157,224,0.1);
-  --bg-layer3: rgba(77,157,224,0.15);
-  --bg-modal: rgba(8,16,32,0.97);
-  --border-subtle: rgba(77,157,224,0.2);
-  --border-medium: rgba(77,157,224,0.35);
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
-  --shadow-modal: 0 24px 80px rgba(0,0,0,0.6);
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Az Index</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+    (function(){
+        var s = localStorage.getItem('azAppearance');
+        var prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+        if (s === 'light' || (!s && !prefersDark)) {
+            document.documentElement.classList.add('light');
+        }
+    })();
+    </script>
+    <style>
 
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  background-image:
-    linear-gradient(rgba(77,157,224,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(77,157,224,0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%,
-    rgba(77,157,224,0.08) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-}
-.logo-icon { background: #1a6bb5; border: 1px solid #4d9de0; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
-#appHeader { background: rgba(10,22,40,0.9); border-bottom: 1px solid rgba(77,157,224,0.3); }
-[data-theme="light"] #appHeader { background: rgba(10,22,40,0.9); }
-#filterBar { background: rgba(10,22,40,0.85); border-bottom: 1px solid rgba(77,157,224,0.2); }
-[data-theme="light"] #filterBar { background: rgba(10,22,40,0.85); }
-.cmdlet-card { border-left: 3px solid var(--verb-color, var(--verb-default)); }
-.cmdlet-card:hover { box-shadow: 0 0 16px rgba(77,157,224,0.2); border-color: rgba(77,157,224,0.4); }
-.syntax-block { background: rgba(0,0,0,0.4); color: #7bb8e8; border-color: rgba(77,157,224,0.2); }
-[data-theme="light"] .syntax-block { background: rgba(0,0,0,0.4); color: #7bb8e8; }
-.hl-cmdlet { color: #7bb8e8; }
-.hl-param { color: #9ab0d0; }
-.hl-string { color: #4db8a0; }
-.hl-variable { color: #d4a843; }
-.btn-primary { background: #1a6bb5; border: 1px solid #4d9de0; }
-.loading-logo { background: #1a6bb5; border: 1px solid #4d9de0; border-radius: 4px; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+        :root {
+            --bg-deep: #0a1628;
+            --bg-panel: #0d1f3c;
+            --bg-raised: #112850;
+            --bg-glow: #163060;
+            --border-dim: #1a3a5a;
+            --border-mid: #2a5a8a;
+            --border-bright: #00aaff;
+            --phosphor: #00aaff;
+            --phosphor-dim: #0077bb;
+            --phosphor-faint: #004477;
+            --amber: #ffcc00;
+            --amber-dim: #b89800;
+            --cyan: #00aaff;
+            --red: #ff4444;
+            --text-bright: #d4e4f7;
+            --text-mid: #8aafcf;
+            --text-dim: #4a6a8a;
+            --text-ghost: #2a4a6a;
+            --font-display: 'Barlow Condensed', sans-serif;
+            --font-mono: 'Source Code Pro', monospace;
+            --font-body: 'Source Sans 3', sans-serif;
+        }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:var(--font-sans);
-  background:var(--bg-base);
-  color:var(--text-primary);
-  min-height:100vh;
-  overflow-x:hidden;
-}
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,114,198,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(80,163,224,0.08) 0%, transparent 60%);
-  pointer-events:none;z-index:0;
-}
+        /* --- Grid pattern overlay (graph paper) --- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0, 170, 255, 0.04) 19px,
+                    rgba(0, 170, 255, 0.04) 20px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0, 170, 255, 0.04) 19px,
+                    rgba(0, 170, 255, 0.04) 20px
+                );
+        }
 
-/* ── Header ─────────────────────────────────────── */
-#appHeader{
-  position:sticky;top:0;z-index:100;
-  height:var(--header-h);
-  background:rgba(28,28,30,0.8);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border-bottom:1px solid var(--border-subtle);
-  display:flex;align-items:center;gap:12px;
-  padding:0 20px;
-}
-[data-theme="light"] #appHeader{background:rgba(240,244,248,0.85);}
-.logo{
-  display:flex;align-items:center;gap:8px;
-  font-weight:700;font-size:1.1rem;letter-spacing:-.02em;
-  color:var(--text-primary);text-decoration:none;flex-shrink:0;
-}
-.logo-icon{
-  width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,#0072C6,#50a3e0);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.85rem;font-weight:700;color:#fff;letter-spacing:-.02em;
-}
-.header-meta{
-  display:flex;align-items:center;gap:6px;
-  font-size:.75rem;color:var(--text-tertiary);flex-shrink:0;
-}
-.header-meta span{
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  padding:2px 8px;border-radius:20px;
-}
-.header-spacer{flex:1}
-.header-stat{
-  font-size:.78rem;color:var(--text-secondary);
-  display:flex;align-items:center;gap:4px;
-}
-.header-stat strong{color:var(--accent-primary);}
-.header-actions{display:flex;align-items:center;gap:6px;}
-.btn-icon{
-  width:34px;height:34px;border-radius:var(--radius-md);
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-secondary);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all var(--transition);font-size:.9rem;
-}
-.btn-icon:hover{background:var(--bg-layer3);color:var(--text-primary);border-color:var(--border-medium);}
-.btn-primary{
-  display:flex;align-items:center;gap:6px;
-  padding:0 14px;height:34px;border-radius:var(--radius-md);
-  background:var(--accent-primary);border:none;color:#fff;
-  font-size:.8rem;font-weight:600;cursor:pointer;
-  transition:all var(--transition);white-space:nowrap;
-}
-.btn-primary:hover{filter:brightness(1.15);}
-.export-wrap{position:relative;}
-.export-menu{
-  position:absolute;top:calc(100% + 6px);right:0;
-  background:var(--bg-modal);border:1px solid var(--border-medium);
-  border-radius:var(--radius-md);padding:4px;
-  display:none;flex-direction:column;gap:2px;
-  min-width:140px;z-index:200;
-  box-shadow:var(--shadow-modal);
-}
-.export-menu.open{display:flex;}
-.export-menu button{
-  background:none;border:none;color:var(--text-primary);
-  padding:7px 10px;border-radius:6px;text-align:left;
-  cursor:pointer;font-size:.82rem;font-family:var(--font-sans);
-  display:flex;align-items:center;gap:8px;
-}
-.export-menu button:hover{background:var(--bg-layer3);}
+        /* --- Vignette overlay --- */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(
+                ellipse 85% 85% at 50% 50%,
+                transparent 60%,
+                rgba(5, 10, 20, 0.3) 85%,
+                rgba(5, 10, 20, 0.6) 100%
+            );
+        }
 
-.theme-select{
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-secondary);border-radius:var(--radius-md);
-  padding:0 10px;height:34px;font-size:.78rem;
-  font-family:var(--font-sans);cursor:pointer;
-}
-.theme-select:focus{outline:none;border-color:var(--accent-primary);}
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-bright);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 170, 255, 0.03), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0, 170, 255, 0.02), transparent);
+        }
 
-/* ── Filter Bar ─────────────────────────────────── */
-#filterBar{
-  position:sticky;top:var(--header-h);z-index:90;
-  background:rgba(28,28,30,0.75);
-  backdrop-filter:blur(16px) saturate(160%);
-  -webkit-backdrop-filter:blur(16px) saturate(160%);
-  border-bottom:1px solid var(--border-subtle);
-  padding:10px 20px;
-  display:flex;flex-direction:column;gap:8px;
-}
-[data-theme="light"] #filterBar{background:rgba(240,244,248,0.8);}
-.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.search-wrap{position:relative;flex:1;min-width:200px;max-width:380px;}
-.search-icon{
-  position:absolute;left:10px;top:50%;transform:translateY(-50%);
-  color:var(--text-tertiary);font-size:.85rem;pointer-events:none;
-}
-#searchInput{
-  width:100%;height:36px;
-  padding:0 32px 0 32px;
-  background:var(--bg-layer2);
-  border:1px solid var(--border-subtle);
-  border-radius:var(--radius-md);
-  color:var(--text-primary);
-  font-size:.85rem;font-family:var(--font-sans);
-  transition:all var(--transition);
-}
-#searchInput::placeholder{color:var(--text-tertiary);}
-#searchInput:focus{outline:none;border-color:var(--accent-primary);box-shadow:0 0 0 3px var(--accent-glow);}
-.search-clear{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:var(--text-tertiary);
-  cursor:pointer;font-size:.85rem;display:none;padding:2px;
-}
-.filter-select{
-  height:36px;padding:0 10px;
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-primary);border-radius:var(--radius-md);
-  font-size:.82rem;font-family:var(--font-sans);cursor:pointer;
-}
-.filter-select:focus{outline:none;border-color:var(--accent-primary);}
-.sort-label{font-size:.78rem;color:var(--text-tertiary);white-space:nowrap;}
-.verb-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.verb-label{font-size:.75rem;color:var(--text-tertiary);white-space:nowrap;}
-.verb-chip{
-  padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
-  white-space:nowrap;
-}
-.verb-chip:hover{border-color:var(--border-medium);color:var(--text-primary);}
-.verb-chip.active{color:#fff;border-color:transparent;}
-.preset-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.preset-label{font-size:.75rem;color:var(--text-tertiary);white-space:nowrap;}
-.preset-chip{
-  padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
-  display:flex;align-items:center;gap:4px;
-}
-.preset-chip:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
-.preset-del{font-size:.65rem;opacity:.6;margin-left:2px;}
-.preset-del:hover{opacity:1;color:var(--verb-remove);}
-.btn-save-preset{
-  padding:3px 10px;border-radius:20px;font-size:.75rem;
-  background:none;border:1px dashed var(--border-medium);
-  color:var(--text-tertiary);cursor:pointer;transition:all var(--transition);
-}
-.btn-save-preset:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
 
-/* recent searches */
-.recent-dropdown{
-  position:absolute;top:calc(100% + 4px);left:0;right:0;
-  background:var(--bg-modal);border:1px solid var(--border-medium);
-  border-radius:var(--radius-md);
-  display:none;flex-direction:column;z-index:300;
-  box-shadow:var(--shadow-modal);overflow:hidden;
-}
-.recent-dropdown.open{display:flex;}
-.recent-item{
-  padding:8px 12px;font-size:.82rem;cursor:pointer;
-  color:var(--text-secondary);display:flex;align-items:center;gap:8px;
-  transition:background var(--transition);
-}
-.recent-item:hover{background:var(--bg-layer3);color:var(--text-primary);}
-.recent-icon{font-size:.75rem;color:var(--text-tertiary);}
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* ── Main Layout ────────────────────────────────── */
-#app{position:relative;z-index:1;}
-#mainLayout{
-  display:flex;
-  max-width:1600px;margin:0 auto;padding:16px 16px 80px;
-  gap:16px;
-}
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Alpha Nav ──────────────────────────────────── */
-#alphaNav{
-  position:sticky;top:calc(var(--header-h) + var(--filter-h) + 16px);
-  height:calc(100vh - var(--header-h) - var(--filter-h) - 48px);
-  display:flex;flex-direction:column;align-items:center;
-  gap:2px;width:26px;flex-shrink:0;overflow-y:auto;
-  scrollbar-width:none;padding-top:4px;
-}
-#alphaNav::-webkit-scrollbar{display:none;}
-.alpha-link{
-  font-size:.65rem;font-weight:600;color:var(--text-tertiary);
-  cursor:pointer;line-height:1;padding:2px 4px;border-radius:3px;
-  transition:all var(--transition);text-decoration:none;display:block;
-}
-.alpha-link:hover,.alpha-link.active{color:var(--accent-primary);}
+        @keyframes glow-pulse {
+            0%, 100% { text-shadow: 0 0 4px rgba(0, 170, 255, 0.3); }
+            50% { text-shadow: 0 0 6px rgba(0, 170, 255, 0.5), 0 0 12px rgba(0, 170, 255, 0.15); }
+        }
 
-/* ── Cards ──────────────────────────────────────── */
-#cardsGrid{
-  flex:1;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-  gap:12px;align-content:start;
-}
-.cmdlet-card{
-  background:var(--bg-layer1);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--border-subtle);
-  border-radius:var(--radius-lg);
-  padding:14px 16px;
-  cursor:pointer;
-  transition:all var(--transition);
-  position:relative;
-  overflow:hidden;
-  border-left:3px solid var(--verb-color, var(--verb-default));
-  animation:fadeUp .25s ease both;
-}
-.cmdlet-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
-  pointer-events:none;
-}
-.cmdlet-card:hover{
-  background:var(--bg-layer2);
-  border-color:var(--border-medium);
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-card), 0 0 0 1px var(--border-medium);
-}
-.cmdlet-card.focused{
-  border-color:var(--accent-primary);
-  box-shadow:0 0 0 2px var(--accent-glow);
-}
-.cmdlet-card.expanded{
-  grid-column:1/-1;
-  cursor:default;
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.card-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
-.cmdlet-name{
-  font-size:.9rem;font-weight:600;
-  color:var(--text-primary);
-  flex:1;word-break:break-word;line-height:1.3;
-}
-.cmdlet-name a{
-  color:inherit;text-decoration:none;
-  border-bottom:1px solid transparent;
-  transition:border-color var(--transition);
-}
-.cmdlet-name a:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
-.card-badges{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
-.badge{
-  padding:2px 7px;border-radius:20px;font-size:.68rem;font-weight:500;
-  white-space:nowrap;
-}
-.badge-module{background:rgba(255,255,255,0.1);color:var(--text-secondary);border:1px solid var(--border-subtle);}
-.badge-cat{color:#fff;}
-.badge-examples{background:rgba(100,210,255,0.15);color:#64d2ff;border:1px solid rgba(100,210,255,0.25);}
-.card-desc{
-  font-size:.8rem;color:var(--text-secondary);
-  line-height:1.5;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
-.card-expand-icon{
-  flex-shrink:0;color:var(--text-tertiary);font-size:.75rem;
-  transition:transform var(--transition);margin-top:2px;
-}
-.cmdlet-card.expanded .card-expand-icon{transform:rotate(180deg);}
+        .animate-slide-in {
+            opacity: 0;
+            animation: slide-in 0.3s ease forwards;
+        }
 
-/* expanded panel */
-.card-detail{
-  display:none;margin-top:14px;
-  padding-top:14px;border-top:1px solid var(--border-subtle);
-}
-.cmdlet-card.expanded .card-detail{display:block;}
-.detail-section{margin-bottom:16px;}
-.detail-section:last-child{margin-bottom:0;}
-.detail-title{
-  font-size:.72rem;font-weight:600;text-transform:uppercase;
-  letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:8px;
-}
-.syntax-block{
-  background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);
-  border-radius:var(--radius-sm);padding:10px 12px;
-  font-family:var(--font-mono);font-size:.76rem;
-  color:#a9dc76;white-space:pre-wrap;word-break:break-all;
-  position:relative;
-}
-[data-theme="light"] .syntax-block{background:rgba(0,0,0,0.06);color:#2e7d32;}
-.params-table{width:100%;border-collapse:collapse;font-size:.79rem;}
-.params-table th{
-  text-align:left;padding:5px 8px;
-  font-weight:600;color:var(--text-tertiary);font-size:.7rem;
-  text-transform:uppercase;letter-spacing:.05em;
-  border-bottom:1px solid var(--border-subtle);
-}
-.params-table td{
-  padding:5px 8px;color:var(--text-secondary);
-  border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top;
-}
-[data-theme="light"] .params-table td{border-bottom-color:rgba(0,0,0,0.04);}
-.params-table td:first-child{
-  font-family:var(--font-mono);font-size:.75rem;
-  color:var(--accent-secondary);font-weight:500;
-}
-.param-required{color:var(--verb-remove);font-size:.7rem;font-weight:600;}
-.param-optional{color:var(--text-tertiary);font-size:.7rem;}
-.param-type{color:var(--text-tertiary);font-size:.73rem;}
-.example-block{
-  background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);
-  border-radius:var(--radius-sm);padding:10px 12px;
-  font-family:var(--font-mono);font-size:.78rem;
-  color:var(--text-primary);position:relative;margin-bottom:6px;
-}
-[data-theme="light"] .example-block{background:rgba(0,0,0,0.05);}
-.example-block:last-child{margin-bottom:0;}
-.copy-btn{
-  position:absolute;top:6px;right:6px;
-  background:var(--bg-layer3);border:1px solid var(--border-subtle);
-  color:var(--text-tertiary);border-radius:5px;
-  padding:2px 6px;font-size:.67rem;cursor:pointer;
-  transition:all var(--transition);font-family:var(--font-sans);
-}
-.copy-btn:hover{color:var(--accent-primary);border-color:var(--accent-primary);}
-.related-list{display:flex;flex-wrap:wrap;gap:6px;}
-.related-chip{
-  padding:3px 10px;border-radius:20px;font-size:.73rem;
-  background:var(--bg-layer2);border:1px solid var(--border-subtle);
-  color:var(--text-secondary);cursor:pointer;transition:all var(--transition);
-  font-family:var(--font-mono);
-}
-.related-chip:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--border-dim); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--phosphor-dim); }
 
-/* ── Lazy load sentinel ────────────────────────── */
-#loadSentinel{
-  grid-column:1/-1;height:60px;
-  display:flex;align-items:center;justify-content:center;
-}
-.loader{
-  width:28px;height:28px;border-radius:50%;
-  border:2px solid var(--border-medium);
-  border-top-color:var(--accent-primary);
-  animation:spin .8s linear infinite;
-  display:none;
-}
-.loader.active{display:block;}
-@keyframes spin{to{transform:rotate(360deg)}}
+        /* --- Layout containers --- */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
 
-/* ── Empty state ────────────────────────────────── */
-#emptyState{
-  grid-column:1/-1;
-  display:none;flex-direction:column;align-items:center;
-  padding:80px 20px;color:var(--text-tertiary);text-align:center;gap:12px;
-}
-#emptyState.show{display:flex;}
-.empty-icon{font-size:3rem;opacity:.4;}
-.empty-title{font-size:1rem;font-weight:600;color:var(--text-secondary);}
-.empty-sub{font-size:.85rem;}
+        /* --- Header --- */
+        .header-bar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(10, 22, 40, 0.95);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 12px 0;
+        }
+        .header-bar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--phosphor-dim), var(--phosphor), var(--phosphor-dim), transparent);
+            opacity: 0.6;
+        }
 
-/* ── Back to top ────────────────────────────────── */
-#backToTop{
-  position:fixed;bottom:24px;right:24px;z-index:200;
-  width:40px;height:40px;border-radius:50%;
-  background:var(--accent-primary);color:#fff;
-  border:none;cursor:pointer;font-size:1rem;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(0,114,198,0.4);
-  opacity:0;pointer-events:none;
-  transition:opacity .3s,transform .3s;
-}
-#backToTop.show{opacity:1;pointer-events:all;}
-#backToTop:hover{transform:translateY(-3px);}
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
 
-/* ── Loading overlay ────────────────────────────── */
-#loadingOverlay{
-  position:fixed;inset:0;z-index:999;
-  background:var(--bg-base);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
-  transition:opacity .4s;
-}
-#loadingOverlay.hidden{opacity:0;pointer-events:none;}
-.loading-logo{
-  width:56px;height:56px;border-radius:14px;
-  background:linear-gradient(135deg,#0072C6,#50a3e0);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;font-weight:700;color:#fff;
-  animation:pulse 1.5s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.loading-text{font-size:.9rem;color:var(--text-secondary);}
+        .logo-block h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--phosphor);
+            text-shadow: 0 0 4px rgba(0, 170, 255, 0.4);
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+        .logo-block .subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+        .logo-block .subtitle::before {
+            content: '> ';
+            color: var(--phosphor-dim);
+        }
 
-/* ── Keyboard shortcut hint ─────────────────────── */
-.kbd-hint{
-  display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--bg-modal);border:1px solid var(--border-medium);
-  border-radius:var(--radius-md);padding:8px 16px;
-  font-size:.75rem;color:var(--text-secondary);
-  box-shadow:var(--shadow-modal);z-index:150;gap:12px;
-  flex-wrap:wrap;justify-content:center;
-}
-.kbd-hint.show{display:flex;}
-kbd{
-  background:var(--bg-layer3);border:1px solid var(--border-medium);
-  border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.75rem;
-  color:var(--text-primary);
-}
+        /* --- Stats display --- */
+        .stats-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-mono);
+        }
+        .stat-block {
+            text-align: center;
+        }
+        .stat-block .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--phosphor);
+            text-shadow: 0 0 4px rgba(0, 170, 255, 0.3);
+        }
+        .stat-block .stat-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .stat-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border-dim);
+        }
 
-/* ── Scrollbar ──────────────────────────────────── */
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-medium);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--text-tertiary);}
+        .icon-btn {
+            padding: 8px;
+            border: 1px solid var(--border-dim);
+            background: transparent;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover {
+            color: var(--phosphor);
+            border-color: var(--phosphor-dim);
+            box-shadow: 0 0 8px rgba(0, 170, 255, 0.15);
+        }
+        .icon-btn svg { width: 16px; height: 16px; }
 
-/* ── Responsive ─────────────────────────────────── */
-@media(max-width:768px){
-  :root{--filter-h:140px;}
-  #alphaNav{display:none;}
-  #mainLayout{padding:12px 12px 80px;}
-  #cardsGrid{grid-template-columns:1fr;}
-  .header-meta,.header-stat{display:none;}
-  .theme-select{display:none;}
-}
+        /* --- Filter bar --- */
+        .filter-bar {
+            position: sticky;
+            top: 60px;
+            z-index: 39;
+            background: rgba(10, 22, 40, 0.9);
+            padding: 12px 0;
+        }
+        .filter-bar > .app-container {
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 12px 24px;
+        }
 
-/* highlight tokens */
-.hl-cmdlet{color:#60a5fa;}
-.hl-param{color:#a78bfa;}
-.hl-string{color:#34d399;}
-.hl-variable{color:#fb923c;}
-.hl-comment{color:#6b7280;font-style:italic;}
-.hl-pipe{color:#e2e8f0;font-weight:600;}
-</style>
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        .crt-input {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 12px 8px 36px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--phosphor);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .crt-input::placeholder { color: var(--text-ghost); }
+        .crt-input:focus {
+            border-color: var(--phosphor-dim);
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.1), inset 0 0 10px rgba(0, 170, 255, 0.02);
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1.5;
+            min-width: 100px;
+        }
+        .search-wrap svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-ghost);
+            pointer-events: none;
+        }
+
+        .crt-select {
+            padding: 8px 28px 8px 10px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--text-mid);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a6a8a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+        }
+        .crt-select:focus {
+            border-color: var(--phosphor-dim);
+            color: var(--text-bright);
+        }
+        .crt-select option {
+            background: var(--bg-panel);
+            color: var(--text-bright);
+        }
+
+        /* --- Verb filter tags --- */
+        .verb-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 8px 0;
+        }
+        .verb-tag {
+            padding: 5px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px solid var(--border-dim);
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .verb-tag:hover {
+            border-color: var(--text-mid);
+            color: var(--text-mid);
+        }
+        .verb-tag-active {
+            background: rgba(0, 170, 255, 0.08) !important;
+            color: var(--phosphor) !important;
+            border-color: var(--phosphor-dim) !important;
+            box-shadow: none;
+        }
+
+        /* --- Presets --- */
+        .presets-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 4px 0;
+        }
+        .preset-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            border: 1px solid var(--border-dim);
+            color: var(--text-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .preset-chip button { background: none; border: none; color: inherit; cursor: pointer; font-size: 0.75rem; }
+        .preset-chip button:hover { color: var(--red); }
+        .save-preset-btn {
+            padding: 3px 10px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            border: 1px dashed var(--text-ghost);
+            background: transparent;
+            color: var(--text-ghost);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+        .save-preset-btn:hover { border-color: var(--phosphor-dim); color: var(--phosphor-dim); }
+
+        /* --- Theme switcher --- */
+        .theme-switcher {
+            padding: 6px 26px 6px 8px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--text-mid);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a6a8a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+        }
+        .theme-switcher:focus {
+            border-color: var(--phosphor-dim);
+            color: var(--text-bright);
+        }
+        .theme-switcher option {
+            background: var(--bg-panel);
+            color: var(--text-bright);
+        }
+
+        /* --- Recent searches dropdown --- */
+        .recent-dropdown {
+            display: none;
+            position: absolute;
+            left: 0; right: 0;
+            top: 100%;
+            margin-top: 4px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            z-index: 50;
+            max-height: 256px;
+            overflow-y: auto;
+        }
+        .recent-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 6px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: none;
+            border: none;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .recent-dropdown button:hover { background: var(--bg-raised); color: var(--phosphor); }
+        .recent-dropdown .clear-btn { font-size: 0.7rem; color: var(--text-ghost); border-top: 1px solid var(--border-dim); }
+        .recent-dropdown .clear-btn:hover { color: var(--red); }
+
+        /* --- Export menu --- */
+        .export-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 4px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            z-index: 50;
+            min-width: 120px;
+        }
+        .export-menu button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 6px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: none;
+            border: none;
+            color: var(--text-mid);
+            cursor: pointer;
+        }
+        .export-menu button:hover { background: var(--bg-raised); color: var(--phosphor); }
+
+        /* --- Main grid --- */
+        .main-content {
+            padding: 24px 0 80px;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        /* --- Cmdlet cards --- */
+        .cmdlet-card {
+            position: relative;
+            background: var(--bg-panel);
+            border: 1px dashed var(--border-dim);
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+        }
+        .cmdlet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--border-dim);
+            transition: all 0.2s;
+        }
+        .cmdlet-card:hover {
+            border-color: var(--border-mid);
+            border-style: solid;
+            background: var(--bg-raised);
+        }
+        .cmdlet-card:hover::before {
+            background: var(--phosphor);
+            box-shadow: 0 0 6px var(--phosphor-dim);
+        }
+
+        /* Verb-specific left border colors */
+        .verb-get .cmdlet-card::before, .cmdlet-card.verb-get::before,
+        .verb-find .cmdlet-card::before, .cmdlet-card.verb-find::before { background: #00aaff; }
+        .verb-set .cmdlet-card::before, .cmdlet-card.verb-set::before,
+        .verb-update .cmdlet-card::before, .cmdlet-card.verb-update::before { background: #ffcc00; }
+        .verb-new .cmdlet-card::before, .cmdlet-card.verb-new::before,
+        .verb-confirm .cmdlet-card::before, .cmdlet-card.verb-confirm::before { background: #44cc88; }
+        .verb-remove .cmdlet-card::before, .cmdlet-card.verb-remove::before,
+        .verb-clear .cmdlet-card::before, .cmdlet-card.verb-clear::before { background: #ff4444; }
+        .verb-invoke .cmdlet-card::before, .cmdlet-card.verb-invoke::before { background: #ff8844; }
+        .verb-add .cmdlet-card::before, .cmdlet-card.verb-add::before { background: #66bbff; }
+        .verb-connect .cmdlet-card::before, .cmdlet-card.verb-connect::before,
+        .verb-disconnect .cmdlet-card::before, .cmdlet-card.verb-disconnect::before { background: #5588aa; }
+
+        .card-name {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-bright);
+            word-break: break-all;
+            line-height: 1.3;
+            text-shadow: none;
+        }
+        .card-name a {
+            color: var(--text-ghost);
+            text-decoration: none;
+            margin-left: 4px;
+            transition: color 0.15s;
+        }
+        .card-name a:hover { color: var(--phosphor); }
+        .card-name a svg { display: inline-block; width: 12px; height: 12px; vertical-align: -1px; }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .card-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border: 1px solid;
+        }
+        .badge-api-stable { color: var(--phosphor-dim); border-color: var(--border-dim); background: rgba(0, 170, 255, 0.04); }
+        .badge-api-beta { color: var(--amber); border-color: var(--amber-dim); background: rgba(255, 204, 0, 0.06); }
+        .badge-category { color: var(--text-dim); border-color: var(--border-dim); background: var(--bg-raised); }
+        .badge-perm { color: var(--amber-dim); border-color: rgba(184, 152, 0, 0.3); background: rgba(255, 204, 0, 0.04); }
+        .badge-examples { color: #44cc88; border-color: rgba(68, 204, 136, 0.3); background: rgba(68, 204, 136, 0.04); }
+
+        .card-desc {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .card-expanded .card-desc { -webkit-line-clamp: unset; }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .card-detail { min-height: 0; }
+
+        .card-focused {
+            outline: 1px solid var(--phosphor);
+            outline-offset: 2px;
+            box-shadow: 0 0 8px rgba(0, 170, 255, 0.1);
+        }
+
+        /* --- Detail sections inside expanded cards --- */
+        .detail-syntax {
+            position: relative;
+            background: var(--bg-deep);
+            border: 1px dashed var(--border-dim);
+            padding: 14px 44px 14px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--phosphor);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            padding: 4px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-dim);
+            color: var(--text-ghost);
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.15s;
+        }
+        .copy-btn:hover { color: var(--phosphor); border-color: var(--phosphor-dim); }
+        .detail-syntax:hover .copy-btn,
+        .example-block:hover .copy-btn,
+        .copy-btn:focus { opacity: 1; }
+
+        details { margin-bottom: 6px; }
+        details[open] > summary svg.chevron { transform: rotate(90deg); }
+        summary { list-style: none; cursor: pointer; }
+        summary::-webkit-details-marker { display: none; }
+
+        .detail-summary {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            padding: 4px 0;
+            transition: color 0.15s;
+        }
+        .detail-summary:hover { color: var(--text-mid); }
+        .detail-summary svg { width: 12px; height: 12px; transition: transform 0.15s; }
+
+        .params-table {
+            width: 100%;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            border-collapse: collapse;
+            margin-top: 4px;
+        }
+        .params-table th {
+            text-align: left;
+            padding: 6px 14px 6px 0;
+            color: var(--text-ghost);
+            font-weight: 400;
+            border-bottom: 1px solid var(--border-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .params-table td {
+            padding: 6px 14px 6px 0;
+            border-bottom: 1px solid rgba(26, 58, 90, 0.5);
+        }
+        .params-table .param-name { color: var(--phosphor); }
+        .params-table .param-type { color: var(--text-mid); }
+        .params-table .param-req { color: var(--amber); }
+        .params-table .param-opt { color: var(--text-ghost); }
+
+        .example-block {
+            position: relative;
+            background: var(--bg-deep);
+            border: 1px dashed var(--border-dim);
+            padding: 12px 44px 12px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--text-mid);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+
+        .perm-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border: 1px solid rgba(184, 152, 0, 0.2);
+            color: var(--amber-dim);
+            background: rgba(255, 204, 0, 0.03);
+            margin: 2px;
+        }
+
+        .related-btn {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .related-btn:hover { color: var(--phosphor); border-color: var(--phosphor-dim); }
+
+        /* --- PowerShell syntax highlighting --- */
+        .ps-comment { color: var(--text-ghost); font-style: italic; }
+        .ps-string { color: var(--amber); }
+        .ps-variable { color: #44cc88; }
+        .ps-cmdlet { color: var(--phosphor); }
+        .ps-type { color: var(--amber-dim); }
+
+        /* --- Loading spinner --- */
+        .crt-spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border-dim);
+            border-top-color: var(--phosphor);
+            animation: spin 0.8s linear infinite;
+        }
+        .crt-spinner-sm {
+            width: 18px;
+            height: 18px;
+            border-width: 2px;
+        }
+
+        .loading-text {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+        .loading-text::after {
+            content: '_';
+            animation: cursor-blink 1s step-end infinite;
+        }
+
+        /* --- No results --- */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .no-results h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--text-mid);
+            letter-spacing: 0.1em;
+        }
+        .no-results p {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-ghost);
+            margin-top: 8px;
+        }
+
+        /* --- Alpha index sidebar --- */
+        .alpha-nav {
+            display: none;
+            position: fixed;
+            right: 6px;
+            top: 300px;
+            bottom: 16px;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            z-index: 30;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+        }
+        @media (min-width: 1024px) { .alpha-nav { display: flex; } }
+        .alpha-nav button {
+            padding: 1px 4px;
+            background: none;
+            border: none;
+            color: var(--text-ghost);
+            cursor: pointer;
+            transition: color 0.1s;
+        }
+        .alpha-nav button:hover { color: var(--phosphor); text-shadow: 0 0 4px rgba(0, 170, 255, 0.4); }
+
+        /* --- Back to top --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 10px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--text-mid);
+            cursor: pointer;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+        .back-to-top:hover { color: var(--phosphor); border-color: var(--phosphor-dim); }
+        .back-to-top.visible { opacity: 1; pointer-events: auto; }
+        .back-to-top svg { width: 18px; height: 18px; }
+
+        /* --- Responsive --- */
+
+        /* Tablet */
+        @media (max-width: 768px) {
+            .app-container { padding: 0 16px; }
+            .stats-row { gap: 10px; }
+            .stat-block .stat-value { font-size: 1.3rem; }
+            .filter-bar { position: relative; top: auto; }
+            .main-content { padding: 16px 0 80px; }
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .app-container { padding: 0 12px; }
+
+            /* Header compact */
+            .header-bar { padding: 8px 0; }
+            .header-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .logo-block h1 { font-size: 1.4rem; }
+            .logo-block .subtitle { display: none; }
+
+            /* Stats row compact */
+            .stats-row { gap: 8px; width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+            .stat-block .stat-value { font-size: 1.1rem; }
+            .stat-block .stat-label { font-size: 0.5rem; letter-spacing: 0.15em; }
+            .stat-divider { height: 20px; }
+
+            /* Filter bar */
+            .filter-bar { position: relative; top: auto; padding: 10px 0; }
+            .filter-bar > .app-container { padding: 10px 12px; }
+            .filter-row { flex-direction: column; gap: 8px; }
+            .crt-input, .crt-select, .search-wrap { width: 100%; max-width: 100%; box-sizing: border-box; }
+
+            /* Verb tags hidden, toggle visible */
+            .verb-tags { display: none; }
+
+            /* Cards compact */
+            .cmdlet-card { padding: 12px 14px; }
+            .card-name { font-size: 0.82rem; }
+            .card-desc { font-size: 0.8rem; }
+            .card-header { flex-direction: column; gap: 6px; }
+            .card-badges { align-self: flex-start; }
+
+            /* Contain expanded card content within viewport */
+            .cmdlet-card, .card-detail, .detail-syntax, .params-table, .example-block, details { max-width: 100%; box-sizing: border-box; }
+            .cmdlet-card, .card-detail, details { overflow: hidden; }
+
+            /* Detail sections compact */
+            .detail-syntax { padding: 10px 36px 10px 10px; font-size: 0.78rem; }
+            .params-table { display: block; overflow-x: auto; }
+            .params-table th, .params-table td { padding: 4px 8px; font-size: 0.75rem; white-space: nowrap; }
+
+            /* Back to top - touch friendly */
+            .back-to-top { bottom: 16px; right: 16px; padding: 12px; }
+            .back-to-top svg { width: 20px; height: 20px; }
+
+            /* Main content */
+            .main-content { padding: 12px 0 80px; }
+
+            /* Theme switcher compact */
+            .theme-switcher { font-size: 0.7rem; padding: 4px 20px 4px 6px; }
+
+            /* Onboarding tooltip */
+            .onboarding-tip { max-width: calc(100vw - 32px); }
+        }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            .app-container { padding: 0 8px; }
+            .logo-block h1 { font-size: 1.2rem; }
+            .stat-divider { display: none; }
+            .stats-row { gap: 12px; }
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- Mobile filter toggle --- */
+        .mobile-filter-toggle {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px solid var(--border-dim);
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+        .mobile-filter-toggle:hover { border-color: var(--phosphor-dim); color: var(--phosphor-dim); }
+        @media (max-width: 640px) { .mobile-filter-toggle { display: inline-flex; } }
+        .filter-badge {
+            display: none;
+            padding: 1px 6px;
+            font-size: 0.65rem;
+            background: rgba(0, 170, 255, 0.1);
+            color: var(--phosphor);
+            border: 1px solid var(--phosphor-dim);
+        }
+        .filter-badge.active { display: inline; }
+
+        /* --- Onboarding tooltip --- */
+        .onboarding-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none;
+        }
+        .onboarding-tip {
+            position: absolute;
+            background: var(--bg-panel);
+            border: 1px solid var(--phosphor-dim);
+            padding: 16px;
+            max-width: 300px;
+            pointer-events: auto;
+            box-shadow: 0 0 12px rgba(0, 170, 255, 0.06);
+        }
+        .onboarding-tip p {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-bright);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .onboarding-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .onboarding-dismiss {
+            padding: 4px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: none;
+            border: none;
+            color: var(--text-ghost);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .onboarding-dismiss:hover { color: var(--text-mid); }
+        .onboarding-next {
+            padding: 4px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(0, 170, 255, 0.08);
+            border: 1px solid var(--phosphor-dim);
+            color: var(--phosphor);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .onboarding-next:hover { background: rgba(0, 170, 255, 0.15); }
+    
+
+        /* --- Suite navigation --- */
+        .suite-nav {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .suite-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            text-decoration: none;
+            color: var(--text-tertiary);
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg-light);
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+        }
+        .suite-link:hover {
+            color: var(--text-secondary);
+            background: var(--glass-bg);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .suite-link.active {
+            color: var(--accent-blue);
+            background: rgba(0, 122, 255, 0.12);
+            border-color: rgba(0, 122, 255, 0.25);
+        }
+        :root.light .suite-link:hover {
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+        :root.light .suite-link.active {
+            background: rgba(0, 122, 255, 0.08);
+            border-color: rgba(0, 122, 255, 0.20);
+        }
+        .suite-icon {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            letter-spacing: 0;
+        }
+        :root.light .suite-icon {
+            background: rgba(0, 0, 0, 0.06);
+        }
+        .suite-link.active .suite-icon {
+            background: rgba(0, 122, 255, 0.15);
+        }
+        @media (max-width: 640px) {
+            .suite-link span:not(.suite-icon) { display: none; }
+            .suite-link { padding: 5px 8px; }
+        }
+
+    </style>
 </head>
 <body>
 
-<div id="loadingOverlay">
-  <div class="loading-logo">Az</div>
-  <div class="loading-text">Loading cmdlet index…</div>
-</div>
-
-<!-- Header -->
-<header id="appHeader">
-  <a href="#" class="logo">
-    <div class="logo-icon">Az</div>
-    <span>Az Index</span>
-  </a>
-  <div class="header-meta">
-    <span id="versionBadge">v—</span>
-  </div>
-  <div class="header-spacer"></div>
-  <div class="header-stat">
-    Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> cmdlets
-  </div>
-  <div class="header-actions">
-    <div class="export-wrap">
-      <button class="btn-primary" onclick="toggleExportMenu()" title="Export results">
-        <span>⬇</span> Export
-      </button>
-      <div class="export-menu" id="exportMenu">
-        <button onclick="exportResults('json')">📄 Export JSON</button>
-        <button onclick="exportResults('csv')">📊 Export CSV</button>
-      </div>
+    <div class="header-bar">
+        <div class="app-container">
+            <div class="header-inner">
+                <div class="logo-block">
+                    <h1><span>Az</span> Index</h1>
+                    <div class="subtitle">Azure PowerShell Cmdlet Index</div>
+                </div>
+                <nav class="suite-nav">
+                    <a href="https://jorgeasaurus.github.io/AzIndex/" class="suite-link active"><span class="suite-icon">Az</span> <span>Azure</span></a>
+                    <a href="https://jorgeasaurus.github.io/MecmIndex/" class="suite-link"><span class="suite-icon">CM</span> <span>MECM</span></a>
+                    <a href="https://jorgeasaurus.github.io/MgGraphIndex/" class="suite-link"><span class="suite-icon">Mg</span> <span>Graph</span></a>
+                </nav>
+                <div class="stats-row">
+                    <div class="stat-block">
+                        <div class="stat-value" id="moduleVersion">--</div>
+                        <div class="stat-label">Module</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-block">
+                        <div class="stat-value" id="totalCmdlets">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-block">
+                        <div class="stat-value" id="filteredCount">0</div>
+                        <div class="stat-label">Showing</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div style="position:relative" id="exportWrap">
+                        <button onclick="toggleExportMenu()" class="icon-btn" aria-label="Export" title="Export filtered results">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </button>
+                        <div id="exportMenu" class="export-menu">
+                            <button onclick="exportResults('json')">JSON</button>
+                            <button onclick="exportResults('csv')">CSV</button>
+                        </div>
+                    </div>
+                    <button onclick="toggleAppearance()" class="icon-btn" id="appearanceToggle" aria-label="Toggle light/dark mode">
+                        <svg id="iconSun" style="display:none" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg id="iconMoon" style="display:none" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
+                    <select class="theme-switcher" id="themeSwitcher" aria-label="Switch theme" onchange="switchTheme(this.value)">
+                        <option value="index.html">Acrylic</option>
+                        <option value="cyberpunk.html">Cyberpunk</option>
+                        <option value="crt.html">CRT</option>
+                        <option value="synthwave.html">Synthwave</option>
+                        <option value="blueprint.html" selected>Blueprint</option>
+                        <option value="solarized.html">Solarized</option>
+                        <option value="geocities.html">Geocities</option>
+                        <option value="ise.html">ISE</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <button class="btn-icon" onclick="toggleAppearance()" id="appearanceBtn" title="Toggle light/dark">🌙</button>
-    <select class="theme-select" onchange="switchTheme(this.value)" id="themeSelect">
-      <option value="index.html">🪟 Acrylic</option>
-      <option value="cyberpunk.html">⚡ Cyberpunk</option>
-      <option value="crt.html">📺 CRT</option>
-      <option value="synthwave.html">🌆 Synthwave</option>
-      <option value="blueprint.html" selected>📐 Blueprint</option>
-      <option value="solarized.html">☀️ Solarized</option>
-      <option value="geocities.html">🌐 Geocities</option>
-    </select>
-  </div>
-</header>
 
-<!-- Filter Bar -->
-<div id="filterBar">
-  <div class="filter-row">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Search cmdlets… (press / to focus)" autocomplete="off" spellcheck="false">
-      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
-      <div class="recent-dropdown" id="recentDropdown"></div>
+    <div class="filter-bar">
+        <div class="app-container">
+            <div class="filter-row">
+                <div class="search-wrap">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" class="glass-input" id="searchInput" placeholder="Search">
+                    <div id="recentSearches" class="recent-dropdown"></div>
+                </div>
+                <select class="glass-select" id="categoryFilter" aria-label="Category"><option value="">All Categories</option></select>
+                <select class="glass-select" id="moduleFilter" aria-label="Module"><option value="">All Modules</option></select>
+                <select class="glass-select" id="sortSelect" aria-label="Sort">
+                    <option value="alpha">Sort: A-Z</option>
+                    <option value="category">Sort: Category</option>
+                    <option value="module">Sort: Module</option>
+                    <option value="examples">Sort: Examples</option>
+                </select>
+            </div>
+            <button class="mobile-filter-toggle" onclick="toggleMobileFilters()">Filters <span id="filterBadge" class="filter-badge"></span></button>
+            <div class="verb-tags" id="verbFilters"></div>
+            <div class="presets-row" id="presetsBar">
+                <div id="presetsList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+                <button onclick="savePreset()" class="save-preset-btn">+ Save Preset</button>
+            </div>
+        </div>
     </div>
-    <select class="filter-select" id="moduleFilter">
-      <option value="">All Modules</option>
-    </select>
-    <select class="filter-select" id="categoryFilter">
-      <option value="">All Categories</option>
-    </select>
-    <span class="sort-label">Sort:</span>
-    <select class="filter-select" id="sortSelect">
-      <option value="alpha">A–Z</option>
-      <option value="alpha-desc">Z–A</option>
-      <option value="module">Module</option>
-      <option value="verb">Verb</option>
-      <option value="category">Category</option>
-    </select>
-  </div>
-  <div class="verb-row">
-    <span class="verb-label">Verb:</span>
-    <div id="verbChips"></div>
-  </div>
-  <div class="preset-row">
-    <span class="preset-label">Presets:</span>
-    <div id="presetChips"></div>
-    <button class="btn-save-preset" onclick="savePreset()">+ Save filter</button>
-  </div>
-</div>
 
-<!-- Main Layout -->
-<div id="app">
-  <div id="mainLayout">
-    <nav id="alphaNav" aria-label="Alphabetical navigation"></nav>
-    <div id="cardsGrid">
-      <div id="emptyState">
-        <div class="empty-icon">🔭</div>
-        <div class="empty-title">No cmdlets found</div>
-        <div class="empty-sub">Try adjusting your search or filters</div>
-      </div>
-      <div id="loadSentinel"><div class="loader" id="loadSpinner"></div></div>
+    <div class="app-container">
+        <main class="main-content">
+            <div class="cards-grid" id="cmdletsGrid">
+                <div style="text-align:center;padding:60px 20px">
+                    <div class="glass-spinner"></div>
+                    <div class="loading-text">Loading cmdlets...</div>
+                </div>
+            </div>
+            <div class="no-results" id="noResults">
+                <h3>No Matches Found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+            <div id="scrollSentinel" style="height:1px"></div>
+        </main>
     </div>
-  </div>
-</div>
 
-<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+    <nav class="alpha-nav" id="alphaIndex"></nav>
 
-<div class="kbd-hint" id="kbdHint">
-  <span><kbd>/</kbd> Search</span>
-  <span><kbd>J</kbd><kbd>K</kbd> Navigate</span>
-  <span><kbd>Enter</kbd> Expand</span>
-  <span><kbd>Esc</kbd> Clear</span>
-</div>
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+    </button>
 
-<script>
-'use strict';
-// ── State ──────────────────────────────────────────────────────────────────
-let cmdlets = [];
-let filteredCmdlets = [];
-let activeVerbs = new Set();
-let renderedCount = 0;
-const CHUNK_SIZE = 50;
-let scrollObserver = null;
-let focusedCardIndex = -1;
-let recentSearches = JSON.parse(localStorage.getItem('azRecentSearches') || '[]');
-let currentSort = 'alpha';
-let savedPresets = JSON.parse(localStorage.getItem('azSavedPresets') || '[]');
-const moduleDetailCache = new Map();
-
-// ── Data Loading ────────────────────────────────────────────────────────────
-async function loadCmdlets() {
-  try {
-    const r = await fetch('data/manifest.json');
-    if (!r.ok) throw new Error('manifest.json not found');
-    const json = await r.json();
-    document.getElementById('versionBadge').textContent = 'v' + json.v;
-    cmdlets = json.d.map(c => ({
-      name: c.n, verb: c.v, module: c.m, category: c.c, hasExamples: c.e,
-      desc: '', syntax: '', examples: []
-    }));
-    document.getElementById('totalCount').textContent = cmdlets.length;
-    await loadDescriptions();
-    populateFilters();
-    restoreState();
-    filterCmdlets();
-    buildAlphaNav();
-    setTimeout(() => {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      setTimeout(() => document.getElementById('loadingOverlay').remove(), 500);
-    }, 300);
-    setTimeout(() => document.getElementById('kbdHint').classList.add('show'), 1000);
-    setTimeout(() => document.getElementById('kbdHint').classList.remove('show'), 5000);
-  } catch(e) {
-    document.getElementById('loadingOverlay').querySelector('.loading-text').textContent = 'Error: ' + e.message;
-  }
-}
-
-async function loadDescriptions() {
-  try {
-    const r = await fetch('data/descriptions.json');
-    if (!r.ok) return;
-    const descs = await r.json();
-    cmdlets.forEach(c => { c.desc = descs[c.name] || ''; });
-  } catch(_) {}
-}
-
-async function loadModuleDetail(moduleName) {
-  if (moduleDetailCache.has(moduleName)) return moduleDetailCache.get(moduleName);
-  try {
-    const r = await fetch(`data/modules/${moduleName}.json`);
-    if (!r.ok) { moduleDetailCache.set(moduleName, null); return null; }
-    const data = await r.json();
-    moduleDetailCache.set(moduleName, data);
-    return data;
-  } catch(_) { moduleDetailCache.set(moduleName, null); return null; }
-}
-
-// ── Fuzzy Search ────────────────────────────────────────────────────────────
-function fuzzyScore(query, target) {
-  if (!query) return 1;
-  const q = query.toLowerCase(), t = target.toLowerCase();
-  if (t === q) return 100;
-  if (t.startsWith(q)) return 90;
-  if (t.includes(q)) return 70;
-  let qi = 0, score = 0, consec = 0;
-  for (let i = 0; i < t.length && qi < q.length; i++) {
-    if (t[i] === q[qi]) { qi++; score += 10 + consec * 5; consec++; }
-    else consec = 0;
-  }
-  return qi === q.length ? score : 0;
-}
-
-// ── Filter & Sort ────────────────────────────────────────────────────────────
-function filterCmdlets() {
-  const q = document.getElementById('searchInput').value.trim();
-  const mod = document.getElementById('moduleFilter').value;
-  const cat = document.getElementById('categoryFilter').value;
-  currentSort = document.getElementById('sortSelect').value;
-  document.getElementById('searchClear').style.display = q ? 'block' : 'none';
-
-  filteredCmdlets = cmdlets.filter(c => {
-    if (mod && c.module !== mod) return false;
-    if (cat && c.category !== cat) return false;
-    if (activeVerbs.size && !activeVerbs.has(c.verb)) return false;
-    if (!q) return true;
-    const score = Math.max(
-      fuzzyScore(q, c.name),
-      fuzzyScore(q, c.module),
-      fuzzyScore(q, c.category),
-      fuzzyScore(q, c.verb),
-      q.length > 3 ? fuzzyScore(q, c.desc) * 0.5 : 0
-    );
-    return score > 0;
-  });
-
-  filteredCmdlets.sort((a, b) => {
-    if (currentSort === 'alpha') return a.name.localeCompare(b.name);
-    if (currentSort === 'alpha-desc') return b.name.localeCompare(a.name);
-    if (currentSort === 'module') return a.module.localeCompare(b.module) || a.name.localeCompare(b.name);
-    if (currentSort === 'verb') return a.verb.localeCompare(b.verb) || a.name.localeCompare(b.name);
-    if (currentSort === 'category') return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
-    return 0;
-  });
-
-  document.getElementById('showingCount').textContent = filteredCmdlets.length;
-  focusedCardIndex = -1;
-  renderCmdlets();
-  serializeState();
-
-  if (q && !recentSearches.includes(q)) {
-    recentSearches.unshift(q);
-    recentSearches = recentSearches.slice(0, 8);
-    localStorage.setItem('azRecentSearches', JSON.stringify(recentSearches));
-  }
-}
-
-// ── Rendering ────────────────────────────────────────────────────────────────
-function verbColor(verb) {
-  const v = verb.toLowerCase();
-  if (['get','find','search'].includes(v)) return 'var(--verb-get)';
-  if (['set','update','edit'].includes(v)) return 'var(--verb-set)';
-  if (['new','add','register'].includes(v)) return 'var(--verb-new)';
-  if (['remove','delete','clear','unregister'].includes(v)) return 'var(--verb-remove)';
-  if (['start','enable'].includes(v)) return 'var(--verb-start)';
-  if (['stop','disable'].includes(v)) return 'var(--verb-stop)';
-  if (['connect','disconnect'].includes(v)) return 'var(--verb-connect)';
-  if (['invoke','test'].includes(v)) return 'var(--verb-invoke)';
-  if (['import','export'].includes(v)) return 'var(--verb-import)';
-  if (['restart'].includes(v)) return 'var(--verb-set)';
-  return 'var(--verb-default)';
-}
-function catColor(cat) {
-  const c = cat.toLowerCase();
-  if (c.includes('compute')) return 'var(--cat-compute)';
-  if (c.includes('network')) return 'var(--cat-network)';
-  if (c.includes('storage')) return 'var(--cat-storage)';
-  if (c.includes('security')||c.includes('identity')) return 'var(--cat-security)';
-  if (c.includes('auth')) return 'var(--cat-auth)';
-  if (c.includes('resource')) return 'var(--cat-resources)';
-  return 'var(--cat-default)';
-}
-
-function buildCardHtml(c, animDelay) {
-  const learnUrl = `https://learn.microsoft.com/powershell/module/${c.module.toLowerCase()}/${c.name.toLowerCase()}`;
-  const moduleShort = c.module.replace(/^Az\./,'');
-  const vc = verbColor(c.verb);
-  const cc = catColor(c.category);
-  const descTrunc = c.desc.length > 120 ? c.desc.slice(0,120)+'…' : c.desc;
-  return `
-<div class="cmdlet-card" data-name="${escHtml(c.name)}" data-module="${escHtml(c.module)}"
-     style="--verb-color:${vc};animation-delay:${animDelay}ms"
-     onclick="toggleCard(this)"
-     tabindex="0" role="article" aria-expanded="false">
-  <div class="card-header">
-    <div class="cmdlet-name">
-      <a href="${learnUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="View on Microsoft Learn">${escHtml(c.name)}</a>
+    <!-- Onboarding tooltip container -->
+    <div id="onboardingOverlay" class="onboarding-overlay">
+        <div id="onboardingTip" class="onboarding-tip">
+            <p id="tipText"></p>
+            <div class="onboarding-actions">
+                <button onclick="dismissOnboarding()" class="onboarding-dismiss">Dismiss</button>
+                <button onclick="showNextTip()" class="onboarding-next">Next</button>
+            </div>
+        </div>
     </div>
-    <span class="card-expand-icon">▼</span>
-  </div>
-  <div class="card-badges">
-    <span class="badge badge-module">${escHtml(moduleShort)}</span>
-    <span class="badge badge-cat" style="background:${cc}22;color:${cc};border:1px solid ${cc}44">${escHtml(c.category)}</span>
-    ${c.hasExamples ? '<span class="badge badge-examples">Examples</span>' : ''}
-  </div>
-  <div class="card-desc">${escHtml(descTrunc || 'No description available.')}</div>
-  <div class="card-detail" id="detail-${escHtml(c.name)}">
-    <div class="detail-loading">Loading details…</div>
-  </div>
-</div>`;
-}
 
-function renderCmdlets() {
-  const grid = document.getElementById('cardsGrid');
-  const sentinel = document.getElementById('loadSentinel');
-  const empty = document.getElementById('emptyState');
-  // remove old cards
-  Array.from(grid.querySelectorAll('.cmdlet-card')).forEach(el => el.remove());
-  renderedCount = 0;
-  if (filteredCmdlets.length === 0) {
-    empty.classList.add('show');
-    sentinel.style.display = 'none';
-    if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
-    return;
-  }
-  empty.classList.remove('show');
-  sentinel.style.display = '';
-  renderNextChunk();
-  setupScrollObserver();
-}
+    <script>
+        let cmdlets = [];
+        let filteredCmdlets = [];
+        let activeVerbs = new Set();
+        let renderedCount = 0;
+        const CHUNK_SIZE = 50;
+        let scrollObserver = null;
+        let focusedCardIndex = -1;
+        let recentSearches = JSON.parse(localStorage.getItem('azRecentSearches') || '[]');
+        let nounMap = {};
+        let currentSort = 'alpha';
+        let savedPresets = JSON.parse(localStorage.getItem('azSavedPresets') || '[]');
+        let hasSeenOnboarding = localStorage.getItem('azHasSeenOnboarding') === 'true';
+        let onboardingStep = 0;
+        let descriptionsLoaded = false;
+        const moduleDetailCache = new Map();
 
-function renderNextChunk() {
-  if (renderedCount >= filteredCmdlets.length) {
-    document.getElementById('loadSpinner').classList.remove('active');
-    return;
-  }
-  const grid = document.getElementById('cardsGrid');
-  const sentinel = document.getElementById('loadSentinel');
-  const end = Math.min(renderedCount + CHUNK_SIZE, filteredCmdlets.length);
-  const frag = document.createDocumentFragment();
-  const tmp = document.createElement('div');
-  for (let i = renderedCount; i < end; i++) {
-    tmp.innerHTML = buildCardHtml(filteredCmdlets[i], (i - renderedCount) * 20);
-    frag.appendChild(tmp.firstElementChild);
-  }
-  grid.insertBefore(frag, sentinel);
-  renderedCount = end;
-  if (renderedCount >= filteredCmdlets.length) {
-    document.getElementById('loadSpinner').classList.remove('active');
-  }
-}
-
-function setupScrollObserver() {
-  if (scrollObserver) scrollObserver.disconnect();
-  const sentinel = document.getElementById('loadSentinel');
-  scrollObserver = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting && renderedCount < filteredCmdlets.length) {
-      document.getElementById('loadSpinner').classList.add('active');
-      setTimeout(renderNextChunk, 100);
-    }
-  }, { rootMargin: '200px' });
-  scrollObserver.observe(sentinel);
-}
-
-// ── Card toggle & detail ─────────────────────────────────────────────────────
-async function toggleCard(el) {
-  const wasExpanded = el.classList.contains('expanded');
-  // collapse all
-  document.querySelectorAll('.cmdlet-card.expanded').forEach(c => {
-    c.classList.remove('expanded');
-    c.setAttribute('aria-expanded','false');
-  });
-  if (wasExpanded) return;
-  el.classList.add('expanded');
-  el.setAttribute('aria-expanded','true');
-  el.scrollIntoView({behavior:'smooth', block:'nearest'});
-  const name = el.dataset.name;
-  const module = el.dataset.module;
-  const detailEl = el.querySelector('.card-detail');
-  if (detailEl.dataset.loaded) return;
-  detailEl.dataset.loaded = '1';
-
-  const data = await loadModuleDetail(module);
-  const cmdletData = data && data.cmdlets && data.cmdlets[name];
-  const cmdlet = cmdlets.find(c => c.name === name);
-
-  const syntax = cmdletData ? cmdletData.syntax : '';
-  const examples = cmdletData ? (cmdletData.examples || []) : [];
-  const params = syntax ? parseParameters(syntax) : [];
-  const related = findRelated(cmdlet);
-
-  detailEl.innerHTML = `
-    ${syntax ? `<div class="detail-section">
-      <div class="detail-title">Syntax</div>
-      <div class="syntax-block">${highlightPowerShell(escHtml(syntax))}</div>
-    </div>` : ''}
-    ${params.length ? `<div class="detail-section">
-      <div class="detail-title">Parameters</div>
-      <table class="params-table">
-        <thead><tr><th>Name</th><th>Type</th><th>Required</th></tr></thead>
-        <tbody>${params.map(p => `<tr>
-          <td>-${escHtml(p.name)}</td>
-          <td class="param-type">${escHtml(p.type || 'Switch')}</td>
-          <td>${p.required ? '<span class="param-required">Required</span>' : '<span class="param-optional">Optional</span>'}</td>
-        </tr>`).join('')}</tbody>
-      </table>
-    </div>` : ''}
-    ${examples.length ? `<div class="detail-section">
-      <div class="detail-title">Examples</div>
-      ${examples.map(ex => `<div class="example-block">
-        <button class="copy-btn" onclick="copyText(this, ${JSON.stringify(ex)})">Copy</button>
-        ${highlightPowerShell(escHtml(ex))}
-      </div>`).join('')}
-    </div>` : ''}
-    ${related.length ? `<div class="detail-section">
-      <div class="detail-title">Related Cmdlets</div>
-      <div class="related-list">${related.map(r =>
-        `<span class="related-chip" onclick="jumpTo('${escHtml(r)}')">${escHtml(r)}</span>`
-      ).join('')}</div>
-    </div>` : ''}
-    <div class="detail-section" style="font-size:.73rem;color:var(--text-tertiary)">
-      <a href="https://learn.microsoft.com/powershell/module/${escHtml(module.toLowerCase())}/${escHtml(name.toLowerCase())}"
-         target="_blank" rel="noopener" style="color:var(--accent-primary)">
-        📖 View full documentation on Microsoft Learn →
-      </a>
-    </div>
-  `;
-}
-
-function findRelated(cmdlet) {
-  if (!cmdlet) return [];
-  const noun = cmdlet.name.replace(/^[A-Za-z]+-Az/, '');
-  return cmdlets
-    .filter(c => c.name !== cmdlet.name && (
-      c.name.endsWith(noun) ||
-      c.module === cmdlet.module && c.name !== cmdlet.name
-    ))
-    .slice(0, 6).map(c => c.name);
-}
-
-function jumpTo(name) {
-  document.querySelectorAll('.cmdlet-card.expanded').forEach(c => c.classList.remove('expanded'));
-  const el = document.querySelector(`.cmdlet-card[data-name="${name}"]`);
-  if (el) {
-    el.scrollIntoView({behavior:'smooth', block:'center'});
-    toggleCard(el);
-  } else {
-    document.getElementById('searchInput').value = name;
-    filterCmdlets();
-    setTimeout(() => {
-      const card = document.querySelector(`.cmdlet-card[data-name="${name}"]`);
-      if (card) { card.scrollIntoView({behavior:'smooth'}); toggleCard(card); }
-    }, 400);
-  }
-}
-
-// ── Parameter parsing ────────────────────────────────────────────────────────
-const SKIP_PARAMS = new Set(['WhatIf','Confirm','DefaultProfile','CommonParameters',
-  'Break','HttpPipelineAppend','HttpPipelinePrepend','Proxy','ProxyCredential',
-  'ProxyUseDefaultCredentials','ProgressAction']);
-
-function parseParameters(syntax) {
-  const params = [];
-  const seen = new Set();
-  // required: [-ParamName] <Type>  or  -ParamName <Type>
-  const re = /\[?-([A-Za-z][A-Za-z0-9_]*)\]?(?:\s+(?:<([^>]+)>|\[<([^>]+)>\]))?/g;
-  let m;
-  while ((m = re.exec(syntax)) !== null) {
-    const name = m[1];
-    if (SKIP_PARAMS.has(name) || seen.has(name)) continue;
-    seen.add(name);
-    const type = m[2] || m[3] || null;
-    // required if not wrapped in outer []
-    const chunk = syntax.slice(Math.max(0, m.index - 1), m.index + 20);
-    const required = !syntax.slice(Math.max(0, m.index - 2), m.index).includes('[') &&
-                     !m[0].startsWith('[-');
-    params.push({ name, type, required });
-  }
-  return params.slice(0, 20);
-}
-
-// ── Syntax highlighting ──────────────────────────────────────────────────────
-function highlightPowerShell(code) {
-  return code
-    .replace(/(&amp;|&lt;|&gt;)/g, s => s) // keep entities
-    .replace(/(#[^\n]*)/g, '<span class="hl-comment">$1</span>')
-    .replace(/('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/g, '<span class="hl-string">$1</span>')
-    .replace(/(\$[\w:]+)/g, '<span class="hl-variable">$1</span>')
-    .replace(/(\|)/g, '<span class="hl-pipe">$1</span>')
-    .replace(/\b(Get|Set|New|Remove|Add|Start|Stop|Restart|Update|Connect|Disconnect|Invoke|Import|Export|Test|Enable|Disable|Select|Where|ForEach|Out|Write|Read|Format|ConvertTo|ConvertFrom|Measure|Group|Sort|Tee)-([A-Za-z][A-Za-z0-9]*)/g,
-      '<span class="hl-cmdlet">$1-$2</span>')
-    .replace(/\s(-[A-Za-z][A-Za-z0-9]*)/g, ' <span class="hl-param">$1</span>');
-}
-
-// ── Populate filters ─────────────────────────────────────────────────────────
-function populateFilters() {
-  const modules = [...new Set(cmdlets.map(c => c.module))].sort();
-  const cats = [...new Set(cmdlets.map(c => c.category))].sort();
-  const verbs = [...new Set(cmdlets.map(c => c.verb))].sort();
-
-  const modSel = document.getElementById('moduleFilter');
-  modules.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m; o.textContent = m.replace(/^Az\./,'');
-    modSel.appendChild(o);
-  });
-
-  const catSel = document.getElementById('categoryFilter');
-  cats.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    catSel.appendChild(o);
-  });
-
-  const verbDiv = document.getElementById('verbChips');
-  verbs.forEach(v => {
-    const el = document.createElement('span');
-    el.className = 'verb-chip';
-    el.textContent = v;
-    el.dataset.verb = v;
-    el.style.cssText = activeVerbs.has(v)
-      ? `background:${verbColor(v)};color:#fff;border-color:transparent`
-      : '';
-    el.onclick = () => toggleVerb(v, el);
-    verbDiv.appendChild(el);
-  });
-}
-
-function toggleVerb(verb, el) {
-  if (activeVerbs.has(verb)) {
-    activeVerbs.delete(verb);
-    el.classList.remove('active');
-    el.style.background = '';
-    el.style.color = '';
-    el.style.borderColor = '';
-  } else {
-    activeVerbs.add(verb);
-    el.classList.add('active');
-    el.style.background = verbColor(verb);
-    el.style.color = '#fff';
-    el.style.borderColor = 'transparent';
-  }
-  filterCmdlets();
-}
-
-// ── Alpha Nav ────────────────────────────────────────────────────────────────
-function buildAlphaNav() {
-  const nav = document.getElementById('alphaNav');
-  const letters = [...new Set(cmdlets.map(c => c.name[0].toUpperCase()))].sort();
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
-    const a = document.createElement('a');
-    a.className = 'alpha-link' + (letters.includes(l) ? '' : ' disabled');
-    a.textContent = l;
-    a.style.opacity = letters.includes(l) ? '1' : '0.2';
-    if (letters.includes(l)) {
-      a.onclick = (e) => {
-        e.preventDefault();
-        const matchingCards = Array.from(
-          document.querySelectorAll(`.cmdlet-card[data-name^="${l}"]`)
-        );
-        const visibleCard = matchingCards.find(card => card.offsetParent !== null);
-        if (visibleCard) {
-          visibleCard.scrollIntoView({behavior:'smooth', block:'start'});
+        function debounce(fn, ms) {
+            let id;
+            return (...args) => { clearTimeout(id); id = setTimeout(() => fn(...args), ms); };
         }
-      };
-    }
-    nav.appendChild(a);
-  });
-}
 
-function updateStats() {
-  document.getElementById('showingCount').textContent = filteredCmdlets.length;
-}
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
 
-// ── Presets ──────────────────────────────────────────────────────────────────
-function savePreset() {
-  const name = prompt('Preset name:');
-  if (!name) return;
-  const q = document.getElementById('searchInput').value;
-  const mod = document.getElementById('moduleFilter').value;
-  const cat = document.getElementById('categoryFilter').value;
-  savedPresets.push({ name, q, mod, cat, verbs: [...activeVerbs] });
-  localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets));
-  renderPresets();
-}
-function loadPreset(idx) {
-  const p = savedPresets[idx];
-  if (!p) return;
-  document.getElementById('searchInput').value = p.q || '';
-  document.getElementById('moduleFilter').value = p.mod || '';
-  document.getElementById('categoryFilter').value = p.cat || '';
-  activeVerbs = new Set(p.verbs || []);
-  document.querySelectorAll('.verb-chip').forEach(el => {
-    const v = el.dataset.verb;
-    if (activeVerbs.has(v)) {
-      el.classList.add('active');
-      el.style.background = verbColor(v);
-      el.style.color = '#fff';
-      el.style.borderColor = 'transparent';
-    } else {
-      el.classList.remove('active');
-      el.style.background = '';
-      el.style.color = '';
-      el.style.borderColor = '';
-    }
-  });
-  filterCmdlets();
-}
-function deletePreset(idx) {
-  savedPresets.splice(idx, 1);
-  localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets));
-  renderPresets();
-}
-function renderPresets() {
-  const div = document.getElementById('presetChips');
-  div.innerHTML = '';
-  savedPresets.forEach((p, i) => {
-    const el = document.createElement('span');
-    el.className = 'preset-chip';
-    el.innerHTML = `<span onclick="loadPreset(${i})">${escHtml(p.name)}</span>
-      <span class="preset-del" onclick="deletePreset(${i});event.stopPropagation()">✕</span>`;
-    div.appendChild(el);
-  });
-}
+        function getVerb(name) {
+            const idx = name.indexOf('-');
+            return idx > 0 ? name.substring(0, idx) : '';
+        }
 
-// ── State serialization ───────────────────────────────────────────────────────
-function serializeState() {
-  const q = document.getElementById('searchInput').value;
-  const mod = document.getElementById('moduleFilter').value;
-  const cat = document.getElementById('categoryFilter').value;
-  const sort = document.getElementById('sortSelect').value;
-  const params = new URLSearchParams();
-  if (q) params.set('q', q);
-  if (mod) params.set('m', mod);
-  if (cat) params.set('c', cat);
-  if (activeVerbs.size) params.set('v', [...activeVerbs].join(','));
-  if (sort !== 'alpha') params.set('s', sort);
-  const hash = params.toString();
-  history.replaceState(null, '', hash ? '#' + hash : location.pathname);
-}
+        async function loadCmdlets() {
+            try {
+                const response = await fetch('data/manifest.json');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const wrapper = await response.json();
+                if (wrapper.v) {
+                    var verEl = document.getElementById('moduleVersion');
+                    if (verEl) verEl.textContent = 'v' + wrapper.v;
+                }
+                const data = wrapper.d || wrapper;
+                cmdlets = data.map(c => ({
+                    name: c.n || 'Unknown Cmdlet',
+                    verb: c.v || getVerb(c.n || ''),
+                    category: c.c || 'General',
+                    module: c.m || '',
+                    description: '',
+                    hasExamples: !!c.e,
+                }));
+                buildNounMap(); filteredCmdlets = [...cmdlets]; populateFilters(); restoreState();
+                if (!hasSeenOnboarding) setTimeout(showNextTip, 800);
+                loadDescriptions();
+                loadAllModuleDetails();
+            } catch (e) {
+                console.warn('Manifest load failed, trying cmdlets.json:', e.message);
+                try {
+                    const response = await fetch('data/cmdlets.json');
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    const data = await response.json();
+                    const arr = Array.isArray(data) ? data : (data.cmdlets || [data]);
+                    arr.forEach(function(c) {
+                        var mod = c.module || '';
+                        if (!mod) return;
+                        if (!moduleDetailCache.has(mod)) moduleDetailCache.set(mod, { module: mod, cmdlets: {} });
+                        moduleDetailCache.get(mod).cmdlets[c.name] = {
+                            syntax: c.syntax || '',
+                            examples: Array.isArray(c.examples) ? c.examples : (c.examples ? [c.examples] : []),
+                        };
+                    });
+                    cmdlets = arr.map(c => ({
+                        name: c.name || 'Unknown Cmdlet',
+                        verb: c.verb || getVerb(c.name || ''),
+                        category: c.category || 'General',
+                        module: c.module || '',
+                        description: c.description || 'Azure PowerShell cmdlet.',
+                        hasExamples: Array.isArray(c.examples) && c.examples.length > 0,
+                    }));
+                    buildNounMap(); filteredCmdlets = [...cmdlets];
+                    populateFilters(); restoreState();
+                    if (!hasSeenOnboarding) setTimeout(showNextTip, 800);
+                } catch (e2) {
+                    document.getElementById('cmdletsGrid').innerHTML = '<div style="text-align:center;padding:60px 20px"><h3 style="font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--accent-red)">Unable to Load Data</h3><p style="color:var(--text-tertiary);font-family:var(--font-body);font-size:0.82rem;margin-top:8px">Could not connect to data source. Run the extraction script first.</p></div>';
+                }
+            }
+        }
 
-function restoreState() {
-  const hash = location.hash.replace('#','');
-  if (!hash) return;
-  try {
-    const params = new URLSearchParams(hash);
-    if (params.get('q')) document.getElementById('searchInput').value = params.get('q');
-    if (params.get('m')) document.getElementById('moduleFilter').value = params.get('m');
-    if (params.get('c')) document.getElementById('categoryFilter').value = params.get('c');
-    if (params.get('s')) document.getElementById('sortSelect').value = params.get('s');
-    if (params.get('v')) {
-      params.get('v').split(',').forEach(v => activeVerbs.add(v));
-    }
-  } catch(_) {}
-}
+        async function loadModuleDetail(moduleName) {
+            if (moduleDetailCache.has(moduleName)) return moduleDetailCache.get(moduleName);
+            try {
+                const response = await fetch('data/modules/' + encodeURIComponent(moduleName) + '.json');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+                moduleDetailCache.set(moduleName, data);
+                return data;
+            } catch (e) {
+                console.warn('Module detail fetch failed for ' + moduleName + ':', e.message);
+                return null;
+            }
+        }
 
-// ── Export ────────────────────────────────────────────────────────────────────
-function exportResults(fmt) {
-  document.getElementById('exportMenu').classList.remove('open');
-  const data = filteredCmdlets.map(c => ({
-    name: c.name, verb: c.verb, module: c.module, category: c.category,
-    description: c.desc,
-    learnUrl: `https://learn.microsoft.com/powershell/module/${c.module.toLowerCase()}/${c.name.toLowerCase()}`
-  }));
-  if (fmt === 'json') {
-    download('az-cmdlets.json', JSON.stringify(data, null, 2), 'application/json');
-  } else {
-    const headers = ['name','verb','module','category','description','learnUrl'];
-    const rows = [headers.join(','), ...data.map(r =>
-      headers.map(h => `"${(r[h]||'').toString().replace(/"/g,'""')}"`).join(',')
-    )];
-    download('az-cmdlets.csv', rows.join('\n'), 'text/csv');
-  }
-}
-function download(name, content, type) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], {type}));
-  a.download = name; a.click();
-}
+        async function loadAllModuleDetails() {
+            var modules = [...new Set(cmdlets.map(function(c) { return c.module; }).filter(function(m) { return m; }))];
+            await Promise.all(modules.map(function(m) { return loadModuleDetail(m); }));
+        }
 
-// ── Recent Searches ───────────────────────────────────────────────────────────
-function showRecentSearches() {
-  if (!recentSearches.length) return;
-  const dd = document.getElementById('recentDropdown');
-  dd.innerHTML = recentSearches.map(s =>
-    `<div class="recent-item" onclick="applyRecent(${JSON.stringify(s)})">
-      <span class="recent-icon">⏱</span>${escHtml(s)}
-    </div>`
-  ).join('');
-  dd.classList.add('open');
-}
-function applyRecent(s) {
-  document.getElementById('searchInput').value = s;
-  document.getElementById('recentDropdown').classList.remove('open');
-  filterCmdlets();
-}
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('searchClear').style.display = 'none';
-  filterCmdlets();
-}
+        async function loadDescriptions() {
+            try {
+                var resp = await fetch('data/descriptions.json');
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                var descMap = await resp.json();
+                cmdlets.forEach(function(c) {
+                    c.description = descMap[c.name] || 'Azure PowerShell cmdlet.';
+                });
+                descriptionsLoaded = true;
+                updateRenderedDescriptions(descMap);
+                var searchTerm = document.getElementById('searchInput').value.trim();
+                if (searchTerm) filterCmdlets();
+            } catch (e) {
+                console.warn('Descriptions load failed:', e.message);
+                descriptionsLoaded = true;
+            }
+        }
 
-// ── Appearance ────────────────────────────────────────────────────────────────
-function toggleAppearance() {
-  const html = document.documentElement;
-  const isDark = html.dataset.theme === 'dark';
-  html.dataset.theme = isDark ? 'light' : 'dark';
-  localStorage.setItem('azTheme', html.dataset.theme);
-  updateAppearanceIcon();
-}
-function updateAppearanceIcon() {
-  const isDark = document.documentElement.dataset.theme === 'dark';
-  document.getElementById('appearanceBtn').textContent = isDark ? '🌙' : '☀️';
-}
-(function initTheme() {
-  const saved = localStorage.getItem('azTheme');
-  if (saved) document.documentElement.dataset.theme = saved;
-  updateAppearanceIcon && updateAppearanceIcon();
-})();
+        function updateRenderedDescriptions(descMap) {
+            document.querySelectorAll('.cmdlet-card').forEach(function(card) {
+                var name = card.dataset.name;
+                if (!name) return;
+                var desc = descMap[name] || 'Azure PowerShell cmdlet.';
+                var el = card.querySelector('.card-desc');
+                if (el) el.textContent = desc;
+            });
+        }
 
-function switchTheme(url) { if (url) window.location.href = url; }
-function toggleExportMenu() {
-  document.getElementById('exportMenu').classList.toggle('open');
-}
+        async function populateCardDetail(card, cmdletName, moduleName) {
+            const detailContainer = card.querySelector('.card-detail');
+            if (!detailContainer || detailContainer.dataset.loaded === 'true') return;
+            detailContainer.innerHTML = '<div style="text-align:center;padding:12px"><div class="glass-spinner glass-spinner-sm" style="display:inline-block"></div><div style="font-family:var(--font-body);font-size:0.7rem;color:var(--text-tertiary);margin-top:4px">Loading details...</div></div>';
+            const moduleData = await loadModuleDetail(moduleName);
+            if (!moduleData || !moduleData.cmdlets || !moduleData.cmdlets[cmdletName]) {
+                detailContainer.innerHTML = '<p style="font-family:var(--font-body);font-size:0.78rem;color:var(--text-tertiary);padding:8px 0">No additional details available</p>';
+                detailContainer.dataset.loaded = 'true';
+                return;
+            }
+            const detail = moduleData.cmdlets[cmdletName];
+            let html = '';
 
-// ── Copy to clipboard ─────────────────────────────────────────────────────────
-function copyText(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const orig = btn.textContent;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = orig, 1500);
-  });
-}
+            if (detail.syntax) {
+                html += '<div class="detail-syntax">' + escapeHtml(detail.syntax) +
+                    '<button class="copy-btn" data-copy-syntax="1" title="Copy" onclick="event.stopPropagation()"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button></div>';
+            }
 
-// ── Keyboard navigation ────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === '/' && !e.ctrlKey && document.activeElement.tagName !== 'INPUT') {
-    e.preventDefault();
-    document.getElementById('searchInput').focus();
-    return;
-  }
-  if (e.key === 'Escape') {
-    document.getElementById('searchInput').blur();
-    document.getElementById('recentDropdown').classList.remove('open');
-    document.querySelectorAll('.cmdlet-card.expanded').forEach(c => c.classList.remove('expanded'));
-    return;
-  }
-  if (document.activeElement.tagName === 'INPUT') return;
-  const cards = Array.from(document.querySelectorAll('.cmdlet-card'));
-  if (!cards.length) return;
-  if (e.key === 'j' || e.key === 'ArrowDown') {
-    e.preventDefault();
-    focusedCardIndex = Math.min(focusedCardIndex + 1, cards.length - 1);
-    updateCardFocus(cards);
-  } else if (e.key === 'k' || e.key === 'ArrowUp') {
-    e.preventDefault();
-    focusedCardIndex = Math.max(focusedCardIndex - 1, 0);
-    updateCardFocus(cards);
-  } else if (e.key === 'Enter' && focusedCardIndex >= 0) {
-    toggleCard(cards[focusedCardIndex]);
-  }
-});
-function updateCardFocus(cards) {
-  cards.forEach(c => c.classList.remove('focused'));
-  if (focusedCardIndex >= 0) {
-    cards[focusedCardIndex].classList.add('focused');
-    cards[focusedCardIndex].scrollIntoView({behavior:'smooth', block:'nearest'});
-  }
-}
+            if (detail.syntax) {
+                const params = parseParameters(detail.syntax);
+                if (params.length > 0) {
+                    html += '<details onclick="event.stopPropagation()"><summary class="detail-summary"><svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg><span>' + params.length + ' parameter' + (params.length > 1 ? 's' : '') + '</span></summary>' +
+                        '<table class="params-table"><thead><tr><th>Parameter</th><th>Type</th><th>Required</th></tr></thead><tbody>' +
+                        params.map(function(p) {
+                            return '<tr><td class="param-name">' + escapeHtml(p.name) + '</td><td class="param-type">' + escapeHtml(p.type) + '</td><td class="' + (p.required ? 'param-req' : 'param-opt') + '">' + (p.required ? 'Yes' : 'No') + '</td></tr>';
+                        }).join('') + '</tbody></table></details>';
+                }
+            }
 
-// ── Back to top ────────────────────────────────────────────────────────────────
-window.addEventListener('scroll', () => {
-  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
-});
+            if (detail.examples && detail.examples.length > 0) {
+                html += '<details class="examples-section" onclick="event.stopPropagation()"><summary class="detail-summary"><svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg><span>' + detail.examples.length + ' example' + (detail.examples.length > 1 ? 's' : '') + '</span></summary><div style="margin-top:6px">' +
+                    detail.examples.map(function(ex) {
+                        return '<div class="example-block">' + highlightPowerShell(escapeHtml(ex)) +
+                            '<button class="copy-btn" data-copy-ex="1" title="Copy" onclick="event.stopPropagation()"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button></div>';
+                    }).join('') + '</div></details>';
+            }
 
-// ── Utility ────────────────────────────────────────────────────────────────────
-function escHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function debounce(fn, ms) {
-  let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
-}
+            const noun = cmdletName.indexOf('-') > 0 ? cmdletName.substring(cmdletName.indexOf('-') + 1) : '';
+            const related = noun && nounMap[noun] ? nounMap[noun].filter(function(n) { return n !== cmdletName; }) : [];
+            if (related.length > 0) {
+                html += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">' +
+                    related.slice(0, 5).map(function(r) {
+                        return '<button class="related-btn" onclick="event.stopPropagation();document.getElementById(\'searchInput\').value=\'' + escapeHtml(r) + '\';filterCmdlets()">' + escapeHtml(r) + '</button>';
+                    }).join('') +
+                    (related.length > 5 ? '<span style="font-family:var(--font-body);font-size:0.7rem;color:var(--text-tertiary);align-self:center;padding:0 4px">+' + (related.length - 5) + ' more</span>' : '') + '</div>';
+            }
 
-// ── Close dropdowns on outside click ─────────────────────────────────────────
-document.addEventListener('click', e => {
-  if (!e.target.closest('.export-wrap')) {
-    document.getElementById('exportMenu').classList.remove('open');
-  }
-  if (!e.target.closest('.search-wrap')) {
-    document.getElementById('recentDropdown').classList.remove('open');
-  }
-});
+            detailContainer.innerHTML = html;
+            detailContainer.dataset.loaded = 'true';
+        }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // restore theme before render
-  const saved = localStorage.getItem('azTheme');
-  if (saved) document.documentElement.dataset.theme = saved;
-  updateAppearanceIcon();
-  renderPresets();
+        const tagBase = 'verb-tag';
+        const tagInactive = '';
+        const tagActive = 'verb-tag-active';
 
-  const si = document.getElementById('searchInput');
-  si.addEventListener('input', debounce(filterCmdlets, 180));
-  si.addEventListener('focus', () => {
-    if (!si.value && recentSearches.length) showRecentSearches();
-  });
-  si.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      document.getElementById('recentDropdown').classList.remove('open');
-      filterCmdlets();
-    }
-  });
+        function populateFilters() {
+            const catSelect = document.getElementById('categoryFilter');
+            const categories = [...new Set(cmdlets.map(c => c.category))].sort();
+            catSelect.innerHTML = '<option value="">All Categories</option>' + categories.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join('');
 
-  document.getElementById('moduleFilter').addEventListener('change', filterCmdlets);
-  document.getElementById('categoryFilter').addEventListener('change', filterCmdlets);
-  document.getElementById('sortSelect').addEventListener('change', filterCmdlets);
+            const modSelect = document.getElementById('moduleFilter');
+            const modules = [...new Set(cmdlets.map(c => c.module).filter(m => m))].sort();
+            modSelect.innerHTML = '<option value="">All Modules</option>' + modules.map(m => {
+                const short = m.replace(/^Az\./, '');
+                return '<option value="' + escapeHtml(m) + '">' + escapeHtml(short) + '</option>';
+            }).join('');
 
-  loadCmdlets();
-});
-</script>
+            const verbs = [...new Set(cmdlets.map(c => c.verb).filter(v => v))].sort();
+            const vc = document.getElementById('verbFilters');
+            vc.innerHTML = '<button class="verb-tag verb-tag-active" data-filter="all">All</button>' +
+                verbs.map(v => '<button class="verb-tag" data-filter="' + escapeHtml(v) + '">' + escapeHtml(v.charAt(0).toUpperCase() + v.slice(1).toLowerCase()) + '</button>').join('');
+
+            vc.querySelectorAll('button').forEach(function(tag) {
+                tag.addEventListener('click', function() {
+                    var filter = this.dataset.filter;
+                    if (filter === 'all') { activeVerbs.clear(); }
+                    else if (activeVerbs.has(filter)) { activeVerbs.delete(filter); }
+                    else { activeVerbs.add(filter); }
+                    refreshVerbButtonStyles();
+                    filterCmdlets();
+                });
+            });
+            renderPresets();
+        }
+
+        function filterCmdlets() {
+            var searchTerm = document.getElementById('searchInput').value.trim();
+            var searchLower = searchTerm.toLowerCase();
+            var categoryVal = document.getElementById('categoryFilter').value;
+            var moduleVal = document.getElementById('moduleFilter').value;
+            currentSort = document.getElementById('sortSelect').value;
+            if (searchTerm.length >= 2) saveRecentSearch(searchTerm);
+
+            filteredCmdlets = cmdlets.filter(function(c) {
+                if (searchLower) {
+                    var nameRaw = fuzzyScore(searchLower, c.name);
+                    var nameScore = nameRaw * (1 + searchLower.length / c.name.length);
+                    var descScore = descriptionsLoaded ? fuzzyScore(searchLower, c.description) * 0.3 : 0;
+                    c._score = nameScore + descScore + fuzzyScore(searchLower, c.category) * 0.2;
+                    if (c._score < searchLower.length * 2) return false;
+                } else { c._score = 0; }
+                return (!categoryVal || c.category === categoryVal) &&
+                    (!moduleVal || c.module === moduleVal) &&
+                    (activeVerbs.size === 0 || activeVerbs.has(c.verb));
+            });
+
+            if (searchLower) { filteredCmdlets.sort((a, b) => b._score - a._score); }
+            else {
+                switch (currentSort) {
+                    case 'category': filteredCmdlets.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name)); break;
+                    case 'module': filteredCmdlets.sort((a, b) => (a.module || '').localeCompare(b.module || '') || a.name.localeCompare(b.name)); break;
+                    case 'examples': filteredCmdlets.sort((a, b) => (b.hasExamples?1:0) - (a.hasExamples?1:0) || a.name.localeCompare(b.name)); break;
+                    default: filteredCmdlets.sort((a, b) => a.name.localeCompare(b.name));
+                }
+            }
+            focusedCardIndex = -1;
+            renderCmdlets(); updateStats(); serializeState(); buildAlphaIndex(); updateFilterBadge();
+        }
+
+        function buildCardHtml(c, animDelay) {
+            var verb = (c.verb || getVerb(c.name)).toLowerCase();
+            var learnUrl = getLearnUrl(c);
+            var learnLink = learnUrl ? ' <a href="' + learnUrl + '" target="_blank" rel="noopener" title="MS Learn" onclick="event.stopPropagation()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>' : '';
+            var shortModule = c.module ? c.module.replace(/^Az\./, '') : '';
+            var moduleBadge = shortModule ? '<span class="glass-badge badge-module">' + escapeHtml(shortModule) + '</span>' : '';
+            var exBadge = c.hasExamples ? '<span class="glass-badge badge-examples">Examples</span>' : '';
+
+            return '<div class="cmdlet-card animate-fade-up verb-' + escapeHtml(verb) + '" style="animation-delay:' + animDelay + 'ms" data-name="' + escapeHtml(c.name) + '" data-module="' + escapeHtml(c.module) + '">' +
+                '<div class="card-header"><div class="card-name">' + escapeHtml(c.name) + learnLink + '</div>' +
+                '<div class="card-badges">' + moduleBadge + '<span class="glass-badge badge-category">' + escapeHtml(c.category) + '</span></div></div>' +
+                '<p class="card-desc">' + (c.description ? escapeHtml(c.description) : '') + '</p>' +
+                '<div class="card-meta">' + exBadge + '</div>' +
+                '<div class="card-detail"></div></div>';
+        }
+
+        function renderNextChunk() {
+            var grid = document.getElementById('cmdletsGrid');
+            var chunk = filteredCmdlets.slice(renderedCount, renderedCount + CHUNK_SIZE);
+            if (chunk.length === 0) return;
+            var html = chunk.map((c, i) => buildCardHtml(c, Math.min(i * 15, 300))).join('');
+            grid.insertAdjacentHTML('beforeend', html);
+            renderedCount += chunk.length;
+            if (renderedCount >= filteredCmdlets.length) {
+                var sentinel = document.getElementById('scrollSentinel');
+                if (scrollObserver && sentinel) scrollObserver.unobserve(sentinel);
+            }
+        }
+
+        function renderCmdlets() {
+            var grid = document.getElementById('cmdletsGrid');
+            var noResults = document.getElementById('noResults');
+            if (filteredCmdlets.length === 0) { grid.style.display = 'none'; noResults.style.display = 'block'; return; }
+            grid.style.display = ''; noResults.style.display = 'none';
+            renderedCount = 0; grid.innerHTML = '';
+            renderNextChunk(); setupScrollObserver();
+        }
+
+        function setupScrollObserver() {
+            if (scrollObserver) scrollObserver.disconnect();
+            var sentinel = document.getElementById('scrollSentinel');
+            scrollObserver = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting && renderedCount < filteredCmdlets.length) renderNextChunk();
+            }, { rootMargin: '200px' });
+            scrollObserver.observe(sentinel);
+        }
+
+        function updateStats() {
+            document.getElementById('totalCmdlets').textContent = cmdlets.length;
+            document.getElementById('filteredCount').textContent = filteredCmdlets.length;
+        }
+
+        function fuzzyScore(query, target) {
+            if (!query || !target) return 0;
+            var q = query.toLowerCase(), t = target.toLowerCase();
+            if (t.includes(q)) return 100 + (q.length / t.length) * 50;
+            var qi = 0, score = 0, consecutive = 0, lastIdx = -2;
+            for (var ti = 0; ti < t.length && qi < q.length; ti++) {
+                if (t[ti] === q[qi]) {
+                    score += 1;
+                    if (ti === lastIdx + 1) { consecutive++; score += consecutive * 2; } else consecutive = 0;
+                    if (ti === 0 || t[ti-1] === '-' || t[ti-1] === ' ' || t[ti-1] === '.') score += 5;
+                    lastIdx = ti; qi++;
+                }
+            }
+            return qi === q.length ? score : 0;
+        }
+
+        function highlightPowerShell(code) {
+            var html = code;
+            html = html.replace(/(&#39;[^&#]*?&#39;)/g, '<span class="ps-string">$1</span>');
+            html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="ps-string">$1</span>');
+            html = html.replace(/((?<!&)#[^\n]*)/g, '<span class="ps-comment">$1</span>');
+            html = html.replace(/(\$\w+)/g, '<span class="ps-variable">$1</span>');
+            html = html.replace(/\b([A-Z][a-z]+-[A-Z]\w+)/g, '<span class="ps-cmdlet">$1</span>');
+            html = html.replace(/(\[[A-Z]\w+(?:\.\w+)*(?:\[\])?\])/g, '<span class="ps-type">$1</span>');
+            return html;
+        }
+
+        var commonParams = new Set(['WhatIf','Confirm','Break','Headers','HttpPipelineAppend','HttpPipelinePrepend','Proxy','ProxyCredential','ProxyUseDefaultCredentials','ResponseHeadersVariable','AdditionalProperties']);
+        function parseParameters(syntax) {
+            var params = [], paramStr = syntax.substring(syntax.indexOf(' ') + 1);
+            var re = /(\[)?-(\w+)(?:\s+<([^>]+)>)?/g, m;
+            while ((m = re.exec(paramStr)) !== null) {
+                if (commonParams.has(m[2]) || m[2] === 'CommonParameters') continue;
+                params.push({ name: m[2], type: m[3] || 'switch', required: !m[1] });
+            }
+            return params;
+        }
+
+        function getLearnUrl(c) {
+            if (!c.module) return '';
+            return 'https://learn.microsoft.com/powershell/module/' + c.module.toLowerCase() + '/' + c.name.toLowerCase();
+        }
+
+        function buildNounMap() {
+            nounMap = {};
+            cmdlets.forEach(function(c) {
+                var idx = c.name.indexOf('-');
+                if (idx > 0) { var noun = c.name.substring(idx + 1); if (!nounMap[noun]) nounMap[noun] = []; nounMap[noun].push(c.name); }
+            });
+        }
+
+        function buildAlphaIndex() {
+            var nav = document.getElementById('alphaIndex');
+            if (!nav) return;
+            var letters = [...new Set(filteredCmdlets.map(c => c.name[0].toUpperCase()))].sort();
+            nav.innerHTML = letters.map(l => '<button onclick="scrollToLetter(\'' + l + '\')">' + l + '</button>').join('');
+        }
+        function scrollToLetter(letter) {
+            var idx = filteredCmdlets.findIndex(c => c.name[0].toUpperCase() === letter);
+            if (idx < 0) return;
+            while (renderedCount <= idx) renderNextChunk();
+            var cards = document.querySelectorAll('#cmdletsGrid > div');
+            if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function showRecentSearches() {
+            var dd = document.getElementById('recentSearches');
+            var input = document.getElementById('searchInput');
+            if (input.value || recentSearches.length === 0) { dd.style.display = 'none'; return; }
+            dd.style.display = 'block';
+            dd.innerHTML = recentSearches.map(s => '<button onclick="applyRecentSearch(this.textContent)">' + escapeHtml(s) + '</button>').join('') +
+                '<button class="clear-btn" onclick="clearRecentSearches()">Clear History</button>';
+        }
+        function saveRecentSearch(term) {
+            if (!term || term.length < 2) return;
+            recentSearches = [term, ...recentSearches.filter(s => s !== term)].slice(0, 8);
+            localStorage.setItem('azRecentSearches', JSON.stringify(recentSearches));
+        }
+        function applyRecentSearch(term) { document.getElementById('searchInput').value = term; document.getElementById('recentSearches').style.display = 'none'; filterCmdlets(); }
+        function clearRecentSearches() { recentSearches = []; localStorage.removeItem('azRecentSearches'); document.getElementById('recentSearches').style.display = 'none'; }
+
+        function serializeState() {
+            var p = new URLSearchParams();
+            var q = document.getElementById('searchInput').value; if (q) p.set('q', q);
+            var cat = document.getElementById('categoryFilter').value; if (cat) p.set('cat', cat);
+            var mod = document.getElementById('moduleFilter').value; if (mod) p.set('mod', mod);
+            if (activeVerbs.size > 0) p.set('verbs', [...activeVerbs].join(','));
+            if (currentSort !== 'alpha') p.set('sort', currentSort);
+            var hash = p.toString();
+            history.replaceState(null, '', hash ? '#' + hash : location.pathname + location.search);
+        }
+        function restoreState() {
+            var hash = location.hash.slice(1);
+            if (!hash) { filterCmdlets(); return; }
+            var p = new URLSearchParams(hash);
+            if (p.has('q')) document.getElementById('searchInput').value = p.get('q');
+            if (p.has('cat')) document.getElementById('categoryFilter').value = p.get('cat');
+            if (p.has('mod')) document.getElementById('moduleFilter').value = p.get('mod');
+            if (p.has('verbs')) { activeVerbs = new Set(p.get('verbs').split(',')); refreshVerbButtonStyles(); }
+            if (p.has('sort')) { currentSort = p.get('sort'); document.getElementById('sortSelect').value = currentSort; }
+            filterCmdlets();
+        }
+
+        function refreshVerbButtonStyles() {
+            document.querySelectorAll('#verbFilters button').forEach(function(btn) {
+                var f = btn.dataset.filter;
+                var active = (f === 'all' && activeVerbs.size === 0) || activeVerbs.has(f);
+                btn.classList.toggle('verb-tag-active', active);
+            });
+        }
+
+        function savePreset() {
+            var name = prompt('Preset name:');
+            if (!name) return;
+            savedPresets.push({
+                name: name,
+                q: document.getElementById('searchInput').value,
+                cat: document.getElementById('categoryFilter').value,
+                mod: document.getElementById('moduleFilter').value,
+                verbs: [...activeVerbs],
+                sort: currentSort
+            });
+            localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets));
+            renderPresets();
+        }
+        function loadPreset(idx) {
+            var p = savedPresets[idx]; if (!p) return;
+            document.getElementById('searchInput').value = p.q || '';
+            document.getElementById('categoryFilter').value = p.cat || '';
+            document.getElementById('moduleFilter').value = p.mod || '';
+            activeVerbs = new Set(p.verbs || []);
+            currentSort = p.sort || 'alpha';
+            document.getElementById('sortSelect').value = currentSort;
+            refreshVerbButtonStyles(); filterCmdlets();
+        }
+        function deletePreset(idx) { savedPresets.splice(idx, 1); localStorage.setItem('azSavedPresets', JSON.stringify(savedPresets)); renderPresets(); }
+        function renderPresets() {
+            var el = document.getElementById('presetsList'); if (!el) return;
+            el.innerHTML = savedPresets.map((p, i) =>
+                '<span class="preset-chip"><button onclick="loadPreset(' + i + ')">' + escapeHtml(p.name) + '</button><button onclick="deletePreset(' + i + ')">&times;</button></span>'
+            ).join('');
+        }
+
+        function toggleExportMenu() { var m = document.getElementById('exportMenu'); m.style.display = m.style.display === 'block' ? 'none' : 'block'; }
+        function exportResults(format) {
+            document.getElementById('exportMenu').style.display = 'none';
+            var content, filename, mime;
+            if (format === 'json') {
+                content = JSON.stringify(filteredCmdlets.map(c => ({ name: c.name, category: c.category, module: c.module, description: c.description })), null, 2);
+                filename = 'cmdlets.json'; mime = 'application/json';
+            } else {
+                var rows = [['Name','Category','Module','Description']];
+                filteredCmdlets.forEach(c => rows.push([c.name, c.category, c.module||'', '"'+c.description.replace(/"/g,'""')+'"']));
+                content = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+                filename = 'cmdlets.csv'; mime = 'text/csv';
+            }
+            var blob = new Blob([content], { type: mime });
+            var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard) navigator.clipboard.writeText(text);
+            else { var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); }
+        }
+
+        function updateFilterBadge() {
+            var count = 0;
+            if (activeVerbs.size > 0) count++;
+            if (document.getElementById('categoryFilter').value) count++;
+            if (document.getElementById('moduleFilter').value) count++;
+            var badge = document.getElementById('filterBadge');
+            if (count > 0) { badge.textContent = count; badge.classList.add('active'); }
+            else { badge.classList.remove('active'); }
+        }
+        function toggleMobileFilters() { var f = document.getElementById('verbFilters'); var hidden = window.getComputedStyle(f).display === 'none'; f.style.display = hidden ? 'flex' : 'none'; }
+
+        function updateCardFocus() {
+            document.querySelectorAll('.card-focused').forEach(el => el.classList.remove('card-focused'));
+            var cards = document.querySelectorAll('#cmdletsGrid > .cmdlet-card');
+            if (focusedCardIndex >= 0 && focusedCardIndex < cards.length) {
+                cards[focusedCardIndex].classList.add('card-focused');
+                cards[focusedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // -- Event listeners --
+        document.getElementById('searchInput').addEventListener('input', debounce(filterCmdlets, 150));
+        document.getElementById('searchInput').addEventListener('focus', showRecentSearches);
+        document.getElementById('searchInput').addEventListener('blur', () => setTimeout(() => { document.getElementById('recentSearches').style.display = 'none'; }, 200));
+        document.getElementById('categoryFilter').addEventListener('change', filterCmdlets);
+        document.getElementById('moduleFilter').addEventListener('change', filterCmdlets);
+        document.getElementById('sortSelect').addEventListener('change', filterCmdlets);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); document.getElementById('searchInput').focus(); return; }
+            if (e.key === 'Escape') {
+                document.getElementById('searchInput').value = ''; document.getElementById('searchInput').blur();
+                document.getElementById('recentSearches').style.display = 'none';
+                focusedCardIndex = -1; document.querySelectorAll('.card-focused').forEach(el => el.classList.remove('card-focused'));
+                filterCmdlets(); return;
+            }
+            if (['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+            var cards = document.querySelectorAll('#cmdletsGrid > .cmdlet-card');
+            if (e.key === 'ArrowDown' || e.key === 'j') { e.preventDefault(); focusedCardIndex = Math.min(focusedCardIndex + 1, cards.length - 1); while (renderedCount <= focusedCardIndex) renderNextChunk(); updateCardFocus(); }
+            else if (e.key === 'ArrowUp' || e.key === 'k') { e.preventDefault(); focusedCardIndex = Math.max(focusedCardIndex - 1, 0); updateCardFocus(); }
+            else if (e.key === 'Enter' && focusedCardIndex >= 0 && focusedCardIndex < cards.length) {
+                e.preventDefault();
+                var card = cards[focusedCardIndex];
+                card.classList.toggle('card-expanded');
+                if (card.classList.contains('card-expanded')) {
+                    var name = card.dataset.name, mod = card.dataset.module;
+                    if (name && mod) populateCardDetail(card, name, mod);
+                } else { var dc = card.querySelector('.card-detail'); if (dc) { dc.innerHTML = ''; delete dc.dataset.loaded; } }
+            }
+        });
+
+        document.getElementById('cmdletsGrid').addEventListener('click', function(e) {
+            var copyBtn = e.target.closest('[data-copy-syntax], [data-copy-ex]');
+            if (copyBtn) {
+                e.stopPropagation();
+                var container = copyBtn.closest('.detail-syntax') || copyBtn.closest('.example-block');
+                if (container) {
+                    var text = container.textContent;
+                    copyText(text);
+                    var svg = copyBtn.querySelector('svg');
+                    if (svg) { var orig = svg.innerHTML; svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'; setTimeout(() => { svg.innerHTML = orig; }, 1500); }
+                }
+                return;
+            }
+            if (e.target.closest('a, button, details, summary, select')) return;
+            var card = e.target.closest('.cmdlet-card');
+            if (!card) return;
+            card.classList.toggle('card-expanded');
+            if (card.classList.contains('card-expanded')) {
+                var name = card.dataset.name, mod = card.dataset.module;
+                if (name && mod) populateCardDetail(card, name, mod);
+            } else { var dc = card.querySelector('.card-detail'); if (dc) { dc.innerHTML = ''; delete dc.dataset.loaded; } }
+        });
+
+        window.addEventListener('scroll', function() {
+            var btn = document.getElementById('backToTop');
+            btn.classList.toggle('visible', window.scrollY > 400);
+        }, { passive: true });
+
+        document.addEventListener('click', function(e) { if (!e.target.closest('#exportWrap')) document.getElementById('exportMenu').style.display = 'none'; });
+        window.addEventListener('popstate', restoreState);
+
+        // -- Onboarding --
+        var onboardingTips = [
+            { target: '#searchInput', text: 'Search by cmdlet name, description, or category. Supports fuzzy matching.' },
+            { target: '#verbFilters', text: 'Click verb buttons to filter by action type. Select multiple verbs at once.' },
+            { target: '#categoryFilter', text: 'Use dropdowns to filter by category, module, or change sort order.' },
+            { target: '#cmdletsGrid', text: 'Click any card to expand it and load full details (syntax, examples, related cmdlets).' }
+        ];
+        function showNextTip() {
+            if (onboardingStep >= onboardingTips.length) { dismissOnboarding(); return; }
+            var tip = onboardingTips[onboardingStep];
+            var target = document.querySelector(tip.target);
+            if (!target) { onboardingStep++; showNextTip(); return; }
+            var overlay = document.getElementById('onboardingOverlay');
+            var tipEl = document.getElementById('onboardingTip');
+            overlay.style.display = 'block';
+            document.getElementById('tipText').textContent = tip.text;
+            var rect = target.getBoundingClientRect();
+            tipEl.style.top = Math.min(rect.bottom + 8, window.innerHeight - 150) + 'px';
+            tipEl.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 320)) + 'px';
+            onboardingStep++;
+        }
+        function dismissOnboarding() {
+            hasSeenOnboarding = true;
+            localStorage.setItem('azHasSeenOnboarding', 'true');
+            document.getElementById('onboardingOverlay').style.display = 'none';
+        }
+
+        // Dismiss onboarding on scroll
+        window.addEventListener('scroll', function() {
+            if (!hasSeenOnboarding && document.getElementById('onboardingOverlay').style.display !== 'none') dismissOnboarding();
+        }, { passive: true, once: true });
+
+        function toggleAppearance() {
+            var isLight = document.documentElement.classList.toggle('light');
+            localStorage.setItem('azAppearance', isLight ? 'light' : 'dark');
+            updateAppearanceIcons();
+        }
+
+        function updateAppearanceIcons() {
+            var isLight = document.documentElement.classList.contains('light');
+            document.getElementById('iconSun').style.display = isLight ? 'none' : 'block';
+            document.getElementById('iconMoon').style.display = isLight ? 'block' : 'none';
+        }
+
+        function switchTheme(file) {
+            if (file && file !== location.pathname.split('/').pop()) {
+                location.href = file + location.hash;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCmdlets();
+            updateAppearanceIcons();
+        });
+    </script>
 </body>
 </html>
