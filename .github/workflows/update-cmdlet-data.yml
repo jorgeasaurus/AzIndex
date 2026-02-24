@@ -31,7 +31,7 @@ jobs:
           git clone --depth=1 --filter=blob:none --sparse \
             https://github.com/MicrosoftDocs/azure-docs-powershell.git docs
           cd docs
-          git sparse-checkout set azps-*/Az.*
+          git sparse-checkout set --no-cone 'azps-*/Az.*'
 
       - name: Run parser
         run: |
