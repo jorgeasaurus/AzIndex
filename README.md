@@ -8,9 +8,7 @@ Browse, search, and explore every `Az.*` cmdlet with instant filtering, syntax h
 
 ## Screenshot
 
-![Az Index screenshot](screenshots/acrylic-preview.png)
-
-> _Screenshot coming soon. Run locally to see it in action._
+> A live screenshot will be added once the site is deployed. Run locally to see Az Index in action.
 
 ---
 

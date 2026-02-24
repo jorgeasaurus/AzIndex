@@ -131,23 +131,18 @@ def parse_cmdlet_doc(filepath):
     if re.match(r'^Az\.[A-Za-z]+$', fname):
         return None
 
-    name = front.get('Module Name') or front.get('ms.custom') or fname
-    # Prefer the actual cmdlet name from front matter
-    if 'Module Name' in front:
-        name = front['Module Name']
-    elif re.match(r'^[A-Z][a-z]+-Az', fname):
-        name = fname
-    else:
-        return None
-
+    # Cmdlet name: prefer 'title' front-matter field, fall back to filename stem
+    name = front.get('title') or fname
     if not re.match(r'^[A-Z][a-z]+-Az', name):
         return None
 
-    module = front.get('online version', '')
-    # Extract module from path
+    # Module name: prefer 'Module Name' front-matter field, fall back to Az.* parent directory
+    module = front.get('Module Name', '')
     parent = Path(filepath).parent.name
-    if parent.startswith('Az.'):
+    if (not module) and parent.startswith('Az.'):
         module = parent
+    if not module or not module.startswith('Az.'):
+        return None
 
     synopsis_sec = extract_section(text, 'SYNOPSIS')
     description = synopsis_sec.splitlines()[0].strip() if synopsis_sec else ''

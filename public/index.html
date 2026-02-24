@@ -1038,17 +1038,12 @@ function buildAlphaNav() {
     if (letters.includes(l)) {
       a.onclick = (e) => {
         e.preventDefault();
-        const card = document.querySelector(`.cmdlet-card[data-name^="${l}"]`);
-        if (card) card.scrollIntoView({behavior:'smooth', block:'start'});
-        else {
-          // search for first match
-          document.getElementById('searchInput').value = '';
-          document.getElementById('moduleFilter').value = '';
-          filterCmdlets();
-          setTimeout(() => {
-            const c2 = document.querySelector(`.cmdlet-card[data-name^="${l}"]`);
-            if (c2) c2.scrollIntoView({behavior:'smooth'});
-          }, 300);
+        const matchingCards = Array.from(
+          document.querySelectorAll(`.cmdlet-card[data-name^="${l}"]`)
+        );
+        const visibleCard = matchingCards.find(card => card.offsetParent !== null);
+        if (visibleCard) {
+          visibleCard.scrollIntoView({behavior:'smooth', block:'start'});
         }
       };
     }
@@ -1171,7 +1166,7 @@ function showRecentSearches() {
   if (!recentSearches.length) return;
   const dd = document.getElementById('recentDropdown');
   dd.innerHTML = recentSearches.map(s =>
-    `<div class="recent-item" onclick="applyRecent('${escHtml(s)}')">
+    `<div class="recent-item" onclick="applyRecent(${JSON.stringify(s)})">
       <span class="recent-icon">⏱</span>${escHtml(s)}
     </div>`
   ).join('');

@@ -174,7 +174,7 @@ foreach ($mod in $azModules) {
                     $req   = $p.required -eq 'true'
                     $ptype = if ($p.parameterValue) { " <$($p.parameterValue)>" } else { '' }
                     $pstr  = "-$($p.name)$ptype"
-                    $params += if ($req) { "[$pstr]" } else { "[-$($p.name)$ptype]" }
+                    $params += if ($req) { $pstr } else { "[$pstr]" }
                 }
                 $syntaxStr = "$cname " + ($params -join ' ')
             }
