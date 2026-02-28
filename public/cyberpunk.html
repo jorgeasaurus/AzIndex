@@ -183,8 +183,11 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
+        .logo-block { min-width: 0; flex-shrink: 1; overflow: hidden; }
+        .stats-row { min-width: 0; flex-shrink: 1; }
+
 
         .logo-block h1 {
             font-family: var(--font-display);
